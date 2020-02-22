@@ -140,6 +140,18 @@ SELECT * FROM USER_TABLES;
 SELECT * FROM USER_TAB_COLUMNS
 WHERE TABLE_NAME = 'STUDENT';
 
+--ukol 4.3
+
+COMMENT ON TABLE student IS 'Tabulka obsahuje zaznamy o studentech bakalarskeho, magisterskeho a doktorskeho studia';
+COMMENT ON COLUMN student.fname IS 'Jmeno studenta';
+
+SELECT * FROM USER_TAB_COMMENTS;
+SELECT * FROM USER_COL_COMMENTS;
+
+SELECT * FROM USER_TAB_PRIVS;
+
+SELECT * FROM ALL_TAB_PRIVS;
+
 --ukol 5
 SELECT COLUMN_NAME, DATA_TYPE
 FROM USER_TAB_COLUMNS 
@@ -175,6 +187,18 @@ LEFT JOIN StudijniPlan sp ON st.login = sp.studentlogin AND rok = 2009
 GROUP BY st.login;
 
 --ukol 7
+
+SELECT * FROM Student WHERE lname like 'Nov%';
+
+SELECT * FROM Student WHERE lname like '%y';
+
+SELECT * FROM Student WHERE lname like '%a%';
+
+SELECT * FROM Student WHERE lname not like '%n%';
+
+SELECT * FROM Student WHERE lname like '_o%';
+
+SELECT * FROM Student WHERE lname like '%\_%' ESCAPE '\';
 
 --ukol 8
 
