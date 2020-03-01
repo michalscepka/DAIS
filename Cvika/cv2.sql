@@ -8,7 +8,7 @@ CREATE OR REPLACE PROCEDURE AddStudent(
 AS
 BEGIN
     INSERT INTO Student(login, fname, lname, tallness)
-    VALUES(p_login, p_fname, p_lname, p_tallness);
+        VALUES(p_login, p_fname, p_lname, p_tallness);
 END;
 
 EXECUTE AddStudent('nov01', 'Jan', 'Novak', 150);
@@ -57,12 +57,12 @@ AS
     v_student Student%ROWTYPE;
 BEGIN
     SELECT * INTO v_student
-    FROM Student
-    WHERE login = p_login;
+        FROM Student
+        WHERE login = p_login;
     INSERT INTO Teacher(login, fname, lname, department)
         VALUES(v_student.login, v_student.fname, v_student.lname, p_department);
     DELETE FROM Student WHERE login = p_login;
-COMMIT;
+    COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
@@ -106,7 +106,7 @@ END;
 
 DESC student;
 
-EXEC AddStudent2('Teemo', 'BigSad', 175);
+EXEC AddStudent2('Teemo', 'BigSad', 185);
 
 SELECT * FROM Student;
 
@@ -197,8 +197,7 @@ AS
     v_avg_tallness Student.tallness%TYPE;
     v_student Student%ROWTYPE;
 BEGIN
-    SELECT AVG(tallness) INTO v_avg_tallness
-        FROM Student;
+    SELECT AVG(tallness) INTO v_avg_tallness FROM Student;
     
     OPEN c_cursor;
     LOOP
@@ -233,6 +232,7 @@ AS
 BEGIN
     SELECT AVG(tallness) INTO v_avg_tallness FROM Student;
     
+    --FOR se muze odstranit
     FOR one_student IN (SELECT login, tallness FROM Student)
     LOOP
         IF one_student.tallness > v_avg_tallness THEN
@@ -251,6 +251,8 @@ EXEC AddStudent2('Teemo', 'Sad', 88);
 EXEC AddStudent2('Teemo', 'Sad', 197);
 EXEC AddStudent2('Teemo', 'Sad', 156);
 EXEC AddStudent2('Teemo', 'Sad', 142);
+
+UPDATE Student SET isTall = NULL;
 
 EXEC IsStudentTall();
 
