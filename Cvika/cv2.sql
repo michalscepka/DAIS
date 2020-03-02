@@ -1,4 +1,4 @@
---ukol 1
+--Ukol 1: Ulozene procedury a funkce
 --1.1
 CREATE OR REPLACE PROCEDURE AddStudent(
     p_login VARCHAR2,
@@ -41,7 +41,7 @@ EXEC DBMS_OUTPUT.PUT_LINE(FAddStudent('mot01', 'Jan', 'Motak', 179));
 SELECT * FROM Student;
 
 --------------------------------------------------------------------------------------------
---ukol 2
+--Ukol 2: Promenne
 CREATE TABLE Teacher (
     login CHAR(6) NOT NULL PRIMARY KEY,
     fname VARCHAR2(30) NOT NULL,
@@ -111,7 +111,7 @@ EXEC AddStudent2('Teemo', 'BigSad', 185);
 SELECT * FROM Student;
 
 --------------------------------------------------------------------------------------------
---ukol 3
+--Ukol 3: Ridici konstrukce
 --3.1
 ALTER TABLE Student ADD isTall INT CHECK(isTall IN(0, 1));
 
@@ -189,7 +189,7 @@ EXEC AddStudent2('Teemo', 'BigSad', 175);
 SELECT * FROM Student;
 
 --------------------------------------------------------------------------------------------
---ukol 4
+--Ukol 4: Kurzor
 --4.1
 CREATE OR REPLACE PROCEDURE IsStudentTall
 AS

@@ -78,7 +78,7 @@ INSERT INTO Garant VALUES('bay01', '456-sd2-01', 2009);
 INSERT INTO Garant VALUES('cod02', '456-dais-01', 2009);
 INSERT INTO Garant VALUES('cod02', '456-tzd-01', 2009);
 
---ukol 2.4
+--Ukol 2.4: Dotazovani
 SELECT *
 FROM Student
 JOIN StudijniPlan ON Student.login = studijniplan.studentlogin
@@ -110,7 +110,7 @@ JOIN kurz k ON g.kurzkod = k.kod
 JOIN studijniplan sp ON k.kod = sp.kurzkod
 WHERE g.rok = 2009 AND sp.rok = 2009;
 
---ukol 2.5
+--Ukol 2.5: Pridani atributu
 ALTER TABLE Ucitel
 ADD pracPomerZacatek DATE
 ADD pracPomerKonec DATE;
@@ -134,13 +134,14 @@ WHERE ((SELECT CURRENT_DATE FROM dual) - ADD_MONTHS(u.pracpomerzacatek, 36)) > 0
 SELECT TO_DATE('11.2.2020', 'DD.MM.YYYY') FROM dual;
 SELECT ADD_MONTHS(SYSDATE, -36) FROM dual;
 
---ukol 4.1
+--------------------------------------------------------------------------------------------
+--Ukol 4.1: Systemovy katalog 1/3
 SELECT * FROM USER_TABLES;
 
 SELECT * FROM USER_TAB_COLUMNS
 WHERE TABLE_NAME = 'STUDENT';
 
---ukol 4.3
+--Ukol 4.3: Systemovy katalog 3/3
 
 COMMENT ON TABLE student IS 'Tabulka obsahuje zaznamy o studentech bakalarskeho, magisterskeho a doktorskeho studia';
 COMMENT ON COLUMN student.fname IS 'Jmeno studenta';
@@ -152,18 +153,20 @@ SELECT * FROM USER_TAB_PRIVS;
 
 SELECT * FROM ALL_TAB_PRIVS;
 
---ukol 5
+--------------------------------------------------------------------------------------------
+--Ukol 5: Vestavene funkce SQL
 SELECT COLUMN_NAME, DATA_TYPE
 FROM USER_TAB_COLUMNS 
 WHERE TABLE_NAME = UPPER('Student');
 
---ukol 6.1
+--------------------------------------------------------------------------------------------
+--Ukol 6.1: CHECK
 ALTER TABLE Student ADD Vek DECIMAL(5,2)
 CHECK(Vek BETWEEN 0 AND 150);
 
 ALTER TABLE Ucitel ADD oddeleni INT CHECK(oddeleni IN (100, 200, 300));
 
---ukol 6.2
+--Ukol 6.2: Dalsi SQL dotazy
 UPDATE student
 SET student.vek = 20
 WHERE student.login = 'pla457';
@@ -186,7 +189,8 @@ FROM Student st
 LEFT JOIN StudijniPlan sp ON st.login = sp.studentlogin AND rok = 2009
 GROUP BY st.login;
 
---ukol 7
+--------------------------------------------------------------------------------------------
+--Ukol 7: LIKE, NOT LIKE
 
 SELECT * FROM Student WHERE lname like 'Nov%';
 
@@ -200,7 +204,8 @@ SELECT * FROM Student WHERE lname like '_o%';
 
 SELECT * FROM Student WHERE lname like '%\_%' ESCAPE '\';
 
---ukol 8
+--------------------------------------------------------------------------------------------
+--Ukol 8: NULLIF, NVL, NVL2, COALESCE
 
 
 

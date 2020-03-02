@@ -7,7 +7,8 @@ CREATE TABLE Student (
 
 SELECT * FROM Student;
 
---ukol 1
+--------------------------------------------------------------------------------------------
+--Ukol 1: Uvodni kroky
 ALTER TABLE Student ADD tallness INT;
 ALTER TABLE Student MODIFY email VARCHAR(50) NULL;
 
@@ -22,7 +23,8 @@ SET SERVEROUTPUT ON
 
 SET AUTOCOMMIT OFF
 
---ukol 2
+--------------------------------------------------------------------------------------------
+--Ukol 2
 BEGIN
     DBMS_OUTPUT.PUT_LINE('PL/SQL Output');
 END;
@@ -51,7 +53,8 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE(v_student.login || ' ' || v_student.fname || ' ' || v_student.lname);
 END; --error, protoze to vraci vice nez jeden radek
 
---ukol 3
+--------------------------------------------------------------------------------------------
+--Ukol 3
 BEGIN
     INSERT INTO Student (login, fname, lname, tallness)
     VALUES ('buh06', 'Jana', 'Buhdova', 175);
