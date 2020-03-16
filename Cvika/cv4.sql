@@ -1,8 +1,10 @@
---1. Pridejte tabulce Product atribut dostupny_pocet_kusu.
---Napiste ulozenou proceduru PridejNakup(pID, cID, eID, pieces, price), ktera
---ulozi do tabulky Purchase nakup jen pokud je dostatecny pocet dotupnych
---kusu u daneho produktu. V opacnem pripade vyvola vyjimku. Po vlozeni do tabulky
---Purchase aktualizujte take pocet_dostupnych_kusu.
+------------------------------------- 1. -------------------------------------
+/* Pridejte tabulce Product atribut dostupny_pocet_kusu.
+Napiste ulozenou proceduru PridejNakup(pID, cID, eID, pieces, price), ktera
+ulozi do tabulky Purchase nakup jen pokud je dostatecny pocet dotupnych
+kusu u daneho produktu. V opacnem pripade vyvola vyjimku. Po vlozeni do tabulky
+Purchase aktualizujte take pocet_dostupnych_kusu. */
+------------------------------------------------------------------------------
 
 ALTER TABLE Product ADD dostupny_pocet_kusu INT;
 
@@ -41,9 +43,11 @@ EXEC PridejNakup(1, 1, 1, 1, 100);
 
 DELETE FROM Purchase WHERE nID = 48;
 
---2. Pridejte tabulce Employee atribut pocet_nakupu. Pri kazdem
---vlozeni nakupu hodnotu tohoto atributu u prislusneho zamestnance
---inkrementujte. Pri smazani nakupu hodnotu dekrementujte.
+------------------------------------- 2. -------------------------------------
+/* Pridejte tabulce Employee atribut pocet_nakupu. Pri kazdem
+vlozeni nakupu hodnotu tohoto atributu u prislusneho zamestnance
+inkrementujte. Pri smazani nakupu hodnotu dekrementujte. */
+------------------------------------------------------------------------------
 
 ALTER TABLE Employee ADD pocet_nakupu INT;
 
@@ -71,12 +75,14 @@ EXEC PridejNakup(1, 1, 1, 1, 100);
 
 DELETE FROM Purchase WHERE nID = 48;
 
---3. Vytvorte tabulku ComplaintImport, ktera bude mit parametry nID a eID.
---Vytvorte proceduru InsertComplaints, ktera presune vsechny radky z tabulky
---ComplaintImport do tabulky Complaint. Pri vkladani bude nastavovat hodnotu
---complaintOrder na nejnizsi dostupnou kladnou hodnotu. Zbyvajici atributy budou
---null. Procedura bude kontrolovat, zda existuje eID i nID v prislusnych tabulkach
---a pokud tam nebudou, tak zaznamy pri importu zustanou v tabulce ComplaintImport.
+------------------------------------- 3. -------------------------------------
+/* Vytvorte tabulku ComplaintImport, ktera bude mit parametry nID a eID.
+Vytvorte proceduru InsertComplaints, ktera presune vsechny radky z tabulky
+ComplaintImport do tabulky Complaint. Pri vkladani bude nastavovat hodnotu
+complaintOrder na nejnizsi dostupnou kladnou hodnotu. Zbyvajici atributy budou
+null. Procedura bude kontrolovat, zda existuje eID i nID v prislusnych tabulkach
+a pokud tam nebudou, tak zaznamy pri importu zustanou v tabulce ComplaintImport. */
+------------------------------------------------------------------------------
 
 CREATE TABLE ComplaintImport (
     nID INTEGER NOT NULL,
@@ -131,11 +137,13 @@ SELECT COUNT(nID) FROM Complaint WHERE nID = 1;
 
 SET SERVEROUTPUT ON;
 
---4. Pridejte do tabulky Complaint nepovinny atribut finished, ktery bude moci
---nabyvat pouze hodnot nula nebo jedna. Hodnota jedna bude znamenat, ze je
---reklamace vyrizena a hodnota nula nebo null bude znamenat, ze reklamace jeste
---bezi. Pri vkladani do tabulky Complaint vyvolejte vyjimku, pokud by mel
---zamestnanec po vlozeni vice nez tri reklamace.
+------------------------------------- 4. -------------------------------------
+/* Pridejte do tabulky Complaint nepovinny atribut finished, ktery bude moci
+nabyvat pouze hodnot nula nebo jedna. Hodnota jedna bude znamenat, ze je
+reklamace vyrizena a hodnota nula nebo null bude znamenat, ze reklamace jeste
+bezi. Pri vkladani do tabulky Complaint vyvolejte vyjimku, pokud by mel
+zamestnanec po vlozeni vice nez tri reklamace. */
+------------------------------------------------------------------------------
 
 ALTER TABLE Complaint ADD finished INT CHECK(finished IN (0, 1));
 
