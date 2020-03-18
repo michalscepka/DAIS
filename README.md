@@ -1,2 +1,2 @@
 # DAIS
- PL/SQL
+Database and Information Systems (PL/SQL) - VŠB
