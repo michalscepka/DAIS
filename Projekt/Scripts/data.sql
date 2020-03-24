@@ -144,7 +144,7 @@ INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (1, 5,
 
 SELECT * FROM prijezd;
 
-INSERT INTO jizda (datum, spoj_id) VALUES (to_timestamp('2019-12-05', 'YYYY-MM-DD'), 1);
+INSERT INTO jizda (datum, spoj_id) VALUES (to_timestamp('2020-03-22', 'YYYY-MM-DD'), 1); --UPRAVEN
 INSERT INTO jizda (datum, spoj_id) VALUES (to_timestamp('2019-12-05', 'YYYY-MM-DD'), 2);
 INSERT INTO jizda (datum, spoj_id) VALUES (to_timestamp('2019-12-05', 'YYYY-MM-DD'), 3);
 INSERT INTO jizda (datum, spoj_id) VALUES (to_timestamp('2019-12-05', 'YYYY-MM-DD'), 5);
@@ -160,13 +160,13 @@ INSERT INTO jizda (datum, spoj_id) VALUES (to_timestamp('2019-12-07', 'YYYY-MM-D
 
 SELECT * FROM jizda;
 
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (10, to_timestamp('20191201', 'YYYY-MM-DD'), 1);
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (9, to_timestamp('20191201', 'YYYY-MM-DD'), 2);
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (5, to_timestamp('20191202', 'YYYY-MM-DD'), 3);
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (9, to_timestamp('20191203', 'YYYY-MM-DD'), 4);
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (5, to_timestamp('20191204', 'YYYY-MM-DD'), 5);
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (7, to_timestamp('20191202', 'YYYY-MM-DD'), 1);
-INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (1, to_timestamp('20191201', 'YYYY-MM-DD'), 2);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (10, to_timestamp('2019-12-01', 'YYYY-MM-DD'), 1);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (9, to_timestamp('2019-12-01', 'YYYY-MM-DD'), 2);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (5, to_timestamp('2019-12-02', 'YYYY-MM-DD'), 3);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (9, to_timestamp('2019-12-03', 'YYYY-MM-DD'), 4);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (5, to_timestamp('2019-12-04', 'YYYY-MM-DD'), 5);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (7, to_timestamp('2019-12-02', 'YYYY-MM-DD'), 1);
+INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (1, to_timestamp('2019-12-01', 'YYYY-MM-DD'), 2);
 
 SELECT * FROM historie_ceny;
 
