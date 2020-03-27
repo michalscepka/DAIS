@@ -4,4 +4,9 @@
 Prednasky/
 UDBS projekt/
 Projekt/Images/
-Projekt/Analyza/
+Projekt/Datamodeler/
+
+Projekt/Analyza/*
+!Projekt/Analyza/Latex
+Projekt/Analyza/Latex/*
+!Projekt/Analyza/Latex/Analýza SCE0007.tex

@@ -1,0 +1,697 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{multicol}
+
+\graphicspath{ {C:/Users/Michal/Dropbox/School/4. semestr/DAIS/Projekt/Images/} }
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  language=SQL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  linewidth=12cm
+}
+
+\begin{document}
+
+%{\fontfamily{lmss}\selectfont
+
+\begin{titlepage}
+    \begin{center}
+
+        \begin{figure}[H]
+            \includegraphics[width=\textwidth]{logo.png}
+            \centering
+        \end{figure}
+ 
+        {\LARGE Semestrální projekt: Databázové a informační systémy}\\
+        \vspace{0.25cm}
+        {\Large \textbf{Informační systém pro zjištění vlakových spojení}}
+ 
+        \vspace{1.5cm}
+
+        Vysoká škola báňská – Technická univerzita Ostrava\\
+        Fakulta elektrotechniky a informatiky\\
+        
+        \vfill
+        \begin{multicols}{2}
+            \begin{flushleft}
+                Databázové a informační systémy, 2019/2020\\
+                Cvičící: doc. Ing. Radim Bača, Ph.D.\\
+                Cvičení: ÚT 8:00 – 10:30\\
+            \end{flushleft}
+            \begin{flushright}
+                \textbf{Michal Ščepka}\\
+                \textbf{SCE0007}\\
+                Ostrava, 2020
+            \end{flushright}
+        \end{multicols}
+    \end{center}
+\end{titlepage}
+
+
+\tableofcontents
+\newpage
+
+\section{Specifikace zadání}
+
+\subsection{Proč?}
+
+Potřebujeme informační systém pro zjištění vlakových spojení. Systém má zjednodušit vyhledávání nejrychlejšího či nejlevnějšího vlakového spojení a usnadnit objednávání jízdenek.
+
+\subsection{Kdo?}
+Hlavní rolí bude \textbf{správce drah (admin)} což je osoba, která má na starost správu uživatelů. Může vytvořit uživatele \textbf{vlaková společnost}, který může přidávat nebo upravovat záznamy patřící jeho společnosti. Dále bude v systému uživatel \textbf{zákazník}, který si může prohlížet nabídky společností a objednat si jízdenku. Souhrnně budeme všechny role v systému nazývat \textbf{uživatel}.
+
+\subsection{Vstupy}
+Celý systém se bude týkat zejména tras a vlakových spojů na nich. Spoj se skládá z příjezdů do stanic. U spoje nás bude zajímat název spoje, vlaková společnost, cena za jeden ujetý kilometr, kapacita míst a pravidelnost. U stanice nás bude zajímat název stanice a město, ve kterém se nachází. Příjezd bude obsahovat stanici, spoj, čas příjezdu, pořadí příjezdu a vzdálenost od startovní stanice. Jízda bude obsahovat spoj a datum, kdy se bude konat. Jízdenka obsahuje uživatele, kterému patří, seznam jízd, počáteční a cílovou stanici a vypočtenou cenu. Nový spoj, příjezd a jízdu může vytvořit pouze vlaková společnost.
+
+U uživatele nás bude zajímat login, jméno a příjmení, emailová adresa, typ uživatele a čas poslední návštěvy v systému. Uživatel může mít objednaných mnoho jízdenek.
+
+\subsection{Výstupy}
+Hlavní výstup, který bude dostupný všem uživatelům je zobrazení spoje: název spoje, nástupní a výstupní stanice a město, stanice a města přes které spoj vede, čas odjezdu a příjezdu, cena jízdenky, vlaková společnost a počet volných míst ve vlaku. Dále si uživatel bude moci zobrazit svůj login, jméno, příjmení, emailovou adresu, čas poslední návštěvy v systému, seznam jeho objednaných jízdenek a historii jízdenek kterými cestoval.
+
+Správce drah bude mít dostupný přehled spojů a jízd všech vlakových společností narozdíl od uživatelů typu vlaková společnost, kteří budou mít dostupné jen své jízdy a spoje.
+
+\subsection{Funkce}
+Správce drah bude mít možnost mazat uživatele v systému. Každý uživatel může aktualizovat svoje údaje a objednat/zrušit jízdenku. Vlaková společnost může upravovat nebo přidávat své spoje, jízdy a příjezdy. Systém neumožní přístup k operacím, které nejsou pro danou roli uživatele povoleny. Uživatel si nebude moct objednat jízdenku do plného vlaku. Systém bude sledovat změnu atributu cena za ujetý kilometr. Systém vypočte cenu jízdenky na základě vzdálenosti ze startovní do cílové stanice a ceně za ujetý kilometr.
+
+\subsection{Příklad výstupu}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{vystup.png}
+    \centering
+    \caption{Příklad výstupu}
+    \label{vystup}
+\end{figure}
+
+\newpage
+
+\section{Datový model}
+
+\subsection{Konceptuální model}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{modry.png}
+    \centering
+    \caption{Konceptuální model}
+    \label{konceptualni}
+\end{figure}
+
+\subsection{Relační model}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{zluty.png}
+    \centering
+    \caption{Relační model}
+    \label{relacni}
+\end{figure}
+
+\newpage
+
+\subsection{Lineární zápis}
+Legenda: \textbf{Tabulka}, \underline{primární klíč}, \textit{cizí klíč}, atribut\\
+\noindent
+\textbf{Mesto} (\underline{mesto\_id}, nazev, kraj, psc)\\
+\textbf{Stanice} (\underline{stanice\_id}, nazev, \textit{mesto\_id})\\
+\textbf{Prijezd} (\textit{stanice\_id}, \textit{spoj\_id}, cas, poradi, vzdalenost)\\
+\textbf{Spoj} (\underline{spoj\_id}, nazev, cena\_za\_km, kapacita\_mist, pravidelny, \textit{spolecnost\_id})\\
+\textbf{Spolecnost} (\underline{spolecnost\_id}, nazev, web, email)\\
+\textbf{Jizda} (\underline{jizda\_id}, datum, \textit{spoj\_id})\\
+\textbf{Jizdenka\_Jizda} (\textit{jizda\_id}, \textit{jizdenka\_id})\\
+\textbf{Jizdenka} (\underline{jizdenka\_id}, \textit{uživatel\_id}, \textit{jizda\_id}, \textit{stanice\_id\_start}, \textit{stanice\_id\_cil}, cena)\\
+\textbf{Uzivatel} (\underline{uzivatel\_id}, login, jmeno, prijmeni, email, typ, posledni\_navsteva)\\
+\textbf{Historie\_ceny} (\underline{history\_id}, cena, datum, \textit{spoj\_id})\\
+
+\subsection{Datový slovník}
+
+Tabulka \textbf{Mesto}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+    mesto\_id   & Integer   &       & Primární  & ne    & A     &       & Primární klíč \\ \hline
+    nazev       & Varchar   & 30    &           & ne    &       &       & Název města \\ \hline
+    kraj        & Varchar   & 30    &           & ne    &       &       & Kraj \\ \hline
+    psc         & Integer   &       &           & ne    &       &       & PSČ \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Stanice}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+    stanice\_id	& Integer	&       & Primární	& ne	& A		&       & Primární klíč \\ \hline
+    nazev	    & Varchar	& 30	&           & ne	&		&       & Název stanice \\ \hline
+    mesto\_id	& Integer	&       & Cizí	    & ne	&		&       & Město \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Prijezd}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                & Dat. Typ  & Délka & Klíč              & Null  & Index & IO    & Popis \\ \hline
+    stanice\_id	& Integer	&	    & Primární, Cizí	& ne	& A     &		& Stanice \\ \hline
+    spoj\_id	& Integer	&	    & Primární, Cizí	& ne	& A	    &	    & Spoj \\ \hline
+    cas	        & Time		&	    &                   & ne	&		&       & Čas příjezdu \\ \hline
+    poradi	    & Integer	&		&                   & ne	&		&       & Pořadí příjezdu \\ \hline
+    vzdalenost	& Integer	&		&                   & ne	&	    & 2     & Vzdálenost od\\ &&&&&&& startovní stanice \\ \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\noindent
+Tabulka \textbf{Spoj}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                    & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+    spoj\_id	    & Integer   &		& Primární  & ne	& A		&       & Primární klíč \\ \hline
+    nazev	        & Varchar	& 20	&	        & ne	&		&       & Název spoje \\ \hline
+    cena\_za\_km	& Integer	&	    &	        & ne	&	    & 3     & Cena za 1 ujetý km \\ \hline
+    kapacita\_mist	& Integer	&	    &	        & ne	&		&       & Kapacita míst \\ \hline
+    pravidelny	    & Boolean	&		&           & ne	&		&       & Pravidelnost \\ \hline
+    spolecnost\_id	& Integer	&	    & Cizí	    & ne	&		&       & Společnost \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Spolecnost}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                        & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+        spolecnost\_id	& Integer	&	    & Primární	& ne	& A		&       & Primární klíč \\ \hline
+        nazev	        & Varchar	& 20	&	        & ne	&		&       & Název společnosti \\ \hline
+        web             & Varchar   & 30    &           & ne    &       &       & Webová stránka společnosti \\ \hline
+        email           & Varchar   & 30    &           & ne    &       &       & Email společnosti \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Jizda}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                    & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+        jizda\_id	& Integer	&	    & Primární	& ne	& A		&       & Primární klíč \\ \hline
+        datum	    & Date		&	    &           & ne	&		&       & Datum jízdy \\ \hline
+        spoj\_id	& Integer	&	    & Cizí	    & ne	&   	&	    & Spoj \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Jizdenka\_Jizda}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                    & Dat. Typ  & Délka & Klíč              & Null  & Index & IO    & Popis \\ \hline
+    jizda\_id       & Integer   &       & Primární, Cizí	& ne	& A     &       & Jízda \\ \hline
+    jizdenka\_id    & Integer   &       & Primární, Cizí    & ne    &       &       & Jízdenka \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Jizdenka}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                            & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+        jizdenka\_id	    & Integer	&	    & Primární	& ne	& A		&       & Primární klíč \\ \hline
+        uzivatel\_id	    & Integer	&	    & Cizí	    & ne	&		&       & Uživatel \\ \hline
+        jizda\_id	        & Integer	&	    & Cizí	    & ne	&		&       & Jízda \\ \hline
+        stanice\_id\_start	& Integer	&	    & Cizí	    & ne	&		&       & Startovací stanice \\ \hline
+        stanice\_id\_cil	& Integer	&	    & Cizí	    & ne	&		&       & Cílová stanice \\ \hline
+        cena	            & Integer	&	    & 	        & ne	&		&       & Cena jízdenky \\ \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\noindent
+Tabulka \textbf{Uzivatel}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                            & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+        uzivatel\_id	    & Integer	&	    & Primární	& ne	& A		&       & Primární klíč \\ \hline
+        login	            & Varchar	& 20	& 	        & ne	&	    & 	    & Login uživatele použí-\\ &&&&&&& vaný při přihlašování \\ \hline
+        jmeno	            & Varchar	& 20	& 	        & ne	&	    & 	    & Jméno uživatele \\ \hline
+        prijmeni	        & Varchar	& 20	& 	        & ne	&	    & 	    & Příjmení uživatele \\ \hline
+        email	            & Varchar	& 30	& 	        & ne	&	    & 	    & Email uživatele \\ \hline
+        typ	                & Varchar	& 20	& 	        & ne	&	    & 1     & Kategorie uživatele \\ \hline
+        posledni\_navsteva	& Datetime	& 		&           & ano	&		&       & Datum poslední\\ &&&&&&& návštěvy IS \\ \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+Tabulka \textbf{Historie\_ceny}
+
+\begin{table}[H]
+    \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
+                    & Dat. Typ  & Délka & Klíč      & Null  & Index & IO    & Popis \\ \hline
+        history\_id	& Integer	&	    & Primární	& ne	& A		&       & Primární klíč \\ \hline
+        cena	    & Integer	&	    & 	        & ne	&		&       & Cena spoje \\ \hline
+        datum	    & Datetime	&	    & 	        & ne	&		&       & Datum, do kterého byla\\ &&&&&&& hodnota aktuální \\ \hline
+        spoj\_id	& Integer	&	    & 	        & ne	&		&       & Spoj \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Integritní omezení}
+\begin{enumerate}
+    \item \textit{typ} musí mít hodnotu \textit{spravce drah}, \textit{vlakova spolecnost} nebo \textit{zakaznik}
+    \item \textit{vzdalenost} $\geq$ 0
+    \item \textit{cena\_za\_km} $>$ 0
+\end{enumerate}
+
+\section{Stavová analýza}
+Definujeme tyto stavy jízdy:
+\begin{itemize}
+    \item \textbf{Vytvořená} – vložená jízda
+    \item \textbf{Běžící} – vytvořená jízda kde datum konání jízdy \textit{Jizda.datum} je stejné jako aktuální datum a zároveň první příjezd této jízdy má čas \textit{Prijezd.cas} $\geq$ aktuální čas
+    \item \textbf{Dokončená} – běžící jízda kde \textit{Jizda.datum} $<$ aktuální datum nebo \textit{Jizda.datum} je stejné jako aktuální datum a poslední příjezd patřící k této jízdě má \textit{Prijezd.cas} $<$ než je aktuální
+\end{itemize}
+
+\noindent
+Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
+\begin{itemize}
+    \item \textbf{Vlastní} – jízda patřící ke spoji vytvořená vlakovou společností (\textit{Spoj.spolecnost\_id})
+    \item \textbf{Vyprodaná} – jízda které patří počet jízdenek $\geq$ \textit{Spoj.kapacita\_mist}
+\end{itemize}
+
+\section{Funkční analýza}
+
+\subsection{Seznam funkcí}
+
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+
+\begin{enumerate}
+    % uzivatele
+    \item \textbf{Evidence uživatelů}\\
+        \textit{Tabulka:} Uzivatel\\
+        \textit{Zodpovědnost:} Admin; Zákazník a Vlaková společnost pouze svůj záznam
+        \begin{enumerate}
+            \item \textbf{Zaregistrování nového uživatele}
+            \item \textbf{Aktualizování uživatele}
+            \item \textbf{Zrušení uživatele}
+            \item \textbf{Seznam uživatelů}
+            \item \textbf{Detail uživatele}\\
+            \textit{Tabulky:} Uzivatel, Jizdenka
+        \end{enumerate}
+
+    % jizdy
+    \item \textbf{Evidence jízd}\\
+        \textit{Tabulka:} Jizda, Spoj, Prijezd, Stanice\\
+        \textit{Zodpovědnost:} Vlaková společnost
+        \begin{enumerate}
+            \item \textbf{Vytvoření nové jízdy}
+            \item \underline{\textbf{Aktualizování jízdy}} – aktualizovat je možné jen jízdu, která ještě nezačala
+            \item \textbf{Zrušení jízdy}
+            \item \underline{\textbf{Vyhledání jízdy}} – dle startovní/cílové stanice a času odjezdu\\
+            \textit{Zodpovědnost:} všichni
+            \item \textbf{Detail jízdy}\\
+            \textit{Tabulky:} všechny\\
+            \textit{Zodpovědnost:} všichni
+        \end{enumerate}
+
+    % jizdenky
+    \item \textbf{Evidence jízdenek}\\
+        \textit{Tabulka:} Jizdenka, Uzivatel, Jizda, Stanice, Mesto\\
+        \textit{Zodpovědnost:} všichni
+        \begin{enumerate}
+            \item \underline{\textbf{Objednání jízdenky}} – uživatel si nemůže objednat jízdenku do plného vlaku
+            \item \underline{\textbf{Zrušení jízdenky}} – uživatel nemůže zrušit jízdenku, pokud zbývá méně než 15 minut do odjezdu
+            \item \textbf{Seznam jízdenek} - patřící konkrétnímu uživateli
+            \item \textbf{Detail jízdenky}\\
+            \textit{Tabulky:} všechny\\
+            \textit{Zodpovědnost:} všichni
+            \item \underline{\textbf{Vypočítání ceny jízdenky}} - podle délky trasy
+        \end{enumerate}
+
+    % spoje
+    \item \textbf{Evidence spojů}\\
+        \textit{Tabulka:} Spoj, Prijezd, Stanice, Mesto\\
+        \textit{Zodpovědnost:} Admin, Vlaková společnost
+        \begin{enumerate}
+            \item \textbf{Vytvoření nového spoje}
+            \item \textbf{Aktualizování spoje} – zapsání původní ceny do tabulky Historie\_ceny
+            \item \textbf{Zrušení spoje}
+            \item \textbf{Seznam spojů}\\
+            \textit{Zodpovědnost:} všichni
+            \item \textbf{Detail spoje}\\
+            \textit{Tabulky:} všechny\\
+            \textit{Zodpovědnost:} všichni
+        \end{enumerate}
+
+    % prijezdy
+    \item \textbf{Evidence příjezdů}\\
+        \textit{Tabulka:} Spoj, Stanice, Mesto\\
+        \textit{Zodpovědnost:} Admin, Vlaková společnost
+        \begin{enumerate}
+            \item \textbf{Vytvoření nového příjezdu}
+            \item \textbf{Aktualizování příjezdu}
+            \item \textbf{Zrušení příjezdu}
+            \item \textbf{Seznam příjezdů}\\
+            \textit{Zodpovědnost:} všichni
+            \item \textbf{Detail příjezdu}\\
+            \textit{Tabulky:} všechny\\
+            \textit{Zodpovědnost:} všichni
+        \end{enumerate}
+
+    % stanice
+    \item \textbf{Evidence stanic}\\
+        \textit{Tabulka:} Stanice\\
+        \textit{Zodpovědnost:} všichni
+        \begin{enumerate}
+            \item \textbf{Seznam stanic}
+            \item \textbf{Detail stanice}\\
+            \textit{Tabulky:} Stanice, Mesto
+        \end{enumerate}
+
+    % mesto
+    \item \textbf{Evidence měst}\\
+        \textit{Tabulka:} Mesto\\
+        \textit{Zodpovědnost:} všichni
+        \begin{enumerate}
+            \item \textbf{Seznam měst}
+            \item \textbf{Detail města}
+        \end{enumerate}
+
+    % spolecnosti
+    \item \textbf{Evidence společností}\\
+        \textit{Tabulka:} Spolecnost\\
+        \textit{Zodpovědnost:} všichni
+        \begin{enumerate}
+            \item \textbf{Seznam společností}
+            \item \textbf{Detail společnosti}
+        \end{enumerate}
+\end{enumerate}
+
+\subsection{Detailní popis funkcí}
+
+% ----------------------------- Aktualizování jízdy -----------------------------
+
+\subsubsection*{2.2 Aktualizování jízdy}
+Vstup: \textit{\$p\_jizda\_id}, \textit{\$p\_novy\_datum}, \textit{\$p\_novy\_spoj\_id}\\
+Funkce zkontroluje, zda jízda, kterou chceme aktualizovat již neproběhla nebo zrovna neprobíhá. Pokud neproběhla nebo neprobíhá, změní příslušné parametry podle vstupních parametrů \textit{\$p\_novy\_datum} a \textit{\$p\_novy\_spoj\_id}. Jinak vypíše chybové hlášení.
+
+\begin{enumerate}
+    \item Do proměnné \textit{\$v\_jizda} uložíme jízdu, kterou chceme aktualizovat:
+    \begin{lstlisting}
+        SELECT * FROM Jizda WHERE jizda_id = $p_jizda_id;
+    \end{lstlisting}
+    
+    \item Do proměnné \textit{\$v\_start\_cas} uložíme čas prvního příjezdu spoje:
+    \begin{lstlisting}
+        SELECT p.cas
+        FROM Prijezd p
+            JOIN Spoj s ON p.spoj_id = s.spoj_id
+            JOIN Jizda j ON s.spoj_id = j.spoj_id
+        WHERE p.spoj_id = v_jizda.spoj_id AND
+            j.datum = v_jizda.datum AND 
+            p.poradi IN (SELECT MIN(poradi) FROM prijezd WHERE spoj_id = v_jizda.spoj_id);        
+    \end{lstlisting}
+    
+    \item Pokud \textit{\$v\_jizda.datum} $>$ aktuální datum nebo \textit{\$v\_jizda.datum} = aktuální datum a zároveň \textit{\$v\_start\_cas} $<$ aktuální čas. Aktualizujeme záznam:
+    \begin{lstlisting}
+        UPDATE Jizda 
+        SET Jizda.datum = p_novy_datum, Jizda.spoj_id = p_novy_spoj_id 
+        WHERE Jizda.jizda_id = v_jizda.jizda_id;
+    \end{lstlisting}
+
+    \item Jinak vypíšeme hlášku „Jízda se již nedá aktualizovat“, vyvoláme výjimku, která zamezí vložení záznamu a proceduru ukončíme.
+\end{enumerate}
+
+% ----------------------------- Vyhledání jízdy ----------------------------
+
+\subsubsection*{2.4 Vyhledání jízdy}
+Vstup: \textit{\$p\_datum}, \textit{\$p\_cas\_od}, \textit{\$p\_start\_nazev}, \textit{\$p\_cil\_nazev}\\
+Funkce najde všechny jízdy, které se konají v den zapsaný v proměnné \textit{\$p\_datum} a v čase pozdějším než \textit{\$p\_cas\_od}. Dále jízdy musí obsahovat stanici \textit{\$p\_start\_nazev} a stanici \textit{\$p\_cil\_nazev}. U stanice \textit{\$p\_cil\_nazev} ještě zkontrolujeme zda je její pořadí je vyšší než pořadí od \textit{\$p\_start\_nazev}. Funkce vrací řetězec s nalezenými spoji.
+
+\begin{enumerate}
+    \item Pomocí kurzoru pro dotaz:
+    \begin{lstlisting}
+        SELECT p.spoj_id, p.cas, p.poradi, s.nazev AS nazev_spoje, j.jizda_id, j.datum
+        FROM Stanice st
+            JOIN Prijezd p ON st.stanice_id = p.stanice_id
+            JOIN Spoj s ON p.spoj_id = s.spoj_id
+            JOIN Jizda j ON s.spoj_id = j.spoj_id
+        WHERE datum = $p_datum AND st.nazev = $p_start_nazev AND p.cas >= $p_cas_od
+    \end{lstlisting}
+    budeme procházet jednotlivé jízdy. Jejich spoj\_id, čas, pořadí, název spoje, jizda\_id a datum uložíme do proměnných \textit{\$radek\_spoj\_id}, \textit{\$radek\_cas}, \textit{\$radek\_poradi}, \textit{\$radek\_nazev\_spoje}, \textit{\$radek\_jizda\_id}, \textit{\$radek\_datum} a postupně provedeme následující kroky:
+    
+    \item Do proměnné \textit{\$v\_prijezd\_cas} uložíme pomocí dotazu:
+    \begin{lstlisting}
+        SELECT p.cas
+        FROM Stanice st
+            JOIN Prijezd p ON st.stanice_id = p.stanice_id
+            JOIN Spoj s ON p.spoj_id = s.spoj_id
+            JOIN Jizda j ON s.spoj_id = j.spoj_id
+        WHERE datum = $p_datum AND st.nazev = $p_cil_nazev AND s.spoj_id = $radek_spoj_id AND poradi > $radek_poradi;
+    \end{lstlisting}
+    čas příjezdu, pro který vyhovuje podmínka, že stanice \textit{\$p\_cil\_nazev} je ve spoji pozdější než stanice \textit{\$p\_start\_nazev}.
+
+    \item Ve druhém kroku může nastat výjimka no\_data\_found, protože nemusíme najít cílovou stanici s požadovanými kritérii, takže ji budeme ignorovat a cyklus bude pokračovat. Jinak vypíšeme \textit{\$p\_start\_nazev}, \textit{\$radek\_cas}, \textit{\$radek\_nazev\_spoje}, \textit{\$radek\_datum}, \textit{\$p\_cil\_nazev}, \textit{\$v\_prijezd\_cas}.
+ 
+    \item Výstup bude vyapdat např. takto:
+    \begin{lstlisting}
+        Z Ostrava-Svinov; Odjezd 14:12; LE 400; Datum 06.12.19; Do Praha hl.n.; Prijezd 17:23
+        Z Ostrava-Svinov; Odjezd 15:12; RJ 106; Datum 06.12.19; Do Praha hl.n.; Prijezd 18:23
+    \end{lstlisting}
+\end{enumerate}
+
+% ----------------------------- Objednání jízdenky ----------------------------
+
+\subsubsection*{3.1	Objednání jízdenky}
+Vstup: \textit{\$p\_uzivatel\_id}, \textit{\$p\_jizda\_id}, \textit{\$p\_stanice\_start}, \textit{\$p\_stanice\_cil}\\
+Funkce zkontroluje, zda zbývají volná místa ve spoji. Pokud ano, jízdenka se vytvoří. Jinak vypíše chybové hlášení. Cena jízdenky se vypočítá pomocí funkce SpocitejCenuJizdenky()
+
+\begin{enumerate}
+    \item Do proměnné \textit{\$v\_pocet\_jizdenek} uložíme vypočtenou hodnotu celkového počtu objednaných jízdenek pro \textit{\$p\_jizda\_id}:
+    \begin{lstlisting}
+        SELECT COUNT(jizdenka_id) FROM Jizdenka
+        WHERE jizda_id = $p_jizda_id;
+    \end{lstlisting}
+
+    \item Do proměnné \textit{\$v\_pocet\_mist} uložíme počet celkových míst v našem spoji:
+    \begin{lstlisting}
+        SELECT kapacita_mist
+        FROM Spoj s
+            JOIN Jizda j ON s.spoj_id = j.spoj_id
+        WHERE jizda_id = $p_jizda_id;
+    \end{lstlisting}
+
+    \item Pokud \textit{\$v\_pocet\_jizdenek} $<$ \textit{\$v\_pocet\_mist}, přidáme záznam do tabulky Jizdenka:
+    \begin{lstlisting}
+        INSERT INTO Jizdenka(uzivatel_id, jizda_id, stanice_id_start, stanice_id_cil, cena)
+            VALUES ($p_uzivatel_id, $p_jizda_id, $p_stanice_start, $p_stanice_cil, SpocitejCenuJizdenky($p_stanice_start, $p_stanice_cil, $p_jizda_id));
+    \end{lstlisting}
+
+    \item Pokud nebude volný dostatečný počet míst procedura vypíše: „Spoj je vyprodaný“ a bude ukončena.
+\end{enumerate}
+
+% ----------------------------- Zrušení jízdenky ----------------------------
+
+\subsubsection*{3.2 Zrušení jízdenky}
+Vstup: \textit{\$p\_jizdenka\_id}\\
+Funkce zkontroluje, zda nezbývá 15 minut do odjezdu vlaku. Pokud zbývá víc než 15 minut, funkce smaže jízdenku. Jinak vypíše chybové hlášení.
+
+\begin{enumerate}
+    \item Do proměnné \textit{\$v\_jizdenka} uložíme jízdenku, kterou chceme zrušit:
+    \begin{lstlisting}
+        SELECT * FROM Jizdenka WHERE jizdenka_id = $p_jizdenka_id;
+    \end{lstlisting}
+    
+    \item Do proměnné \textit{\$v\_cas\_odjezdu} uložíme čas odjezdu:
+    \begin{lstlisting}
+        SELECT p.cas
+        FROM Prijezd p
+            JOIN Spoj s ON p.spoj_id = s.spoj_id
+            JOIN Jizda j ON s.spoj_id = j.spoj_id
+            JOIN Jizdenka ji ON j.jizda_id = ji.jizda_id
+        WHERE ji.jizdenka_id = v_jizdenka.jizdenka_id AND
+            p.stanice_id = v_jizdenka.stanice_id_start;
+    \end{lstlisting}
+
+    \item Do proměnné \textit{\$v\_jizda\_datum} uložíme datum konání jízdy:
+    \begin{lstlisting}
+        SELECT datum FROM Jizda WHERE jizda.jizda_id = v_jizdenka.jizda_id;
+    \end{lstlisting}
+
+    \item Pokud \textit{\$v\_jizda\_datum} = aktualni datum a zároveň (\textit{\$v\_cas\_odjezdu} – aktuální čas) $>$ 15 minut. Smažeme jízdenku:
+    \begin{lstlisting}
+        DELETE FROM Jizdenka WHERE jizdenka_id = $v_jizdenka.jizdenka_id;
+    \end{lstlisting}
+
+    \item Jinak vypíšeme chybové hlášení: „Jízdenka již nelze zrušit“, vyvoláme výjimku a proceduru ukončíme.
+\end{enumerate}
+
+% ----------------------------- Vypočítání ceny jízdenky ----------------------------
+
+\subsubsection*{3.5 Vypočítání ceny jízdenky}
+Vstup: \textit{\$p\_stanice\_id\_start}, \textit{\$p\_stanice\_id\_cil}, \textit{\$p\_jizda\_id}\\
+Funkce vypočítá cenu jízdenky podle vstupních parametrů a vrátí výsledek.
+
+\begin{enumerate}
+    \item Do proměnné \textit{\$v\_start\_vzdalenost} uložíme vzdálenost dle \textit{\$p\_stanice\_id\_start} a \textit{\$p\_jizda\_id}:
+    \begin{lstlisting}
+        SELECT DISTINCT vzdalenost
+        FROM prijezd
+            JOIN spoj ON prijezd.spoj_id = spoj.spoj_id
+            JOIN jizda ON spoj.spoj_id = jizda.spoj_id
+        WHERE prijezd.stanice_id = $p_stanice_id_start AND jizda.jizda_id = $p_jizda_id;
+    \end{lstlisting}
+    
+    \item Do proměnné \textit{\$v\_cil\_vzdalenost} uložíme vzdálenost dle \textit{\$p\_stanice\_id\_cil} a \textit{\$p\_jizda\_id}:
+    \begin{lstlisting}
+        SELECT DISTINCT vzdalenost
+        FROM prijezd
+            JOIN spoj ON prijezd.spoj_id = spoj.spoj_id
+            JOIN jizda ON spoj.spoj_id = jizda.spoj_id
+        WHERE prijezd.stanice_id = $p_stanice_id_cil AND jizda.jizda_id = $p_jizda_id;
+    \end{lstlisting}
+
+    \item Do proměnné \textit{\$v\_cena\_za\_km} uložíme cenu za kilometr dle \textit{\$p\_jizda\_id}:
+    \begin{lstlisting}
+        SELECT DISTINCT cena_za_km
+        FROM spoj
+            JOIN jizda ON spoj.spoj_id = jizda.spoj_id
+        WHERE jizda.jizda_id = $p_jizda_id;
+    \end{lstlisting}
+
+    \item Vrátíme výsledek výrazu:
+    \begin{lstlisting}
+        ($v_cil_vzdalenost - $v_start_vzdalenost) * $v_cena_za_km;
+    \end{lstlisting}
+\end{enumerate}
+
+% ----------------------------- Uzivatelske rozhrani ----------------------------
+
+\newpage
+
+\section{Návrh uživatelského rozhraní}
+
+\subsection{Menu}
+
+\begin{enumerate}
+    \item \textbf{Můj profil} – akce: 1.5 Detail uživatele\\
+        \textit{Zodpovědnost}: všichni
+        \begin{enumerate}
+            \item \textbf{Upravit profil} - akce: 1.2 Aktualizování uživatele
+            \item \textbf{Smazat profil} - akce: 1.3 Zrušení uživatele
+        \end{enumerate}
+
+    \item \textbf{Najít spojení} - akce: 2.4 Seznam jízd\\
+        \textit{Zodpovědnost}: Zákazník
+
+    \item \textbf{Moje jízdenky} - akce: 3.3 Seznam jízdenek\\
+        \textit{Zodpovědnost}: Zákazník
+        \begin{enumerate}
+            \item \textbf{Storno jízdenky} - akce: 3.2 Zrušení jízdenky
+        \end{enumerate}
+    
+    \item \textbf{Najít vlak} - akce: 4.4 Seznam spojů\\
+        \textit{Zodpovědnost}: Zákazník
+
+    \item \textbf{Přehled příjezdů} - akce: 5.4 Seznam příjezdů\\
+        \textit{Zodpovědnost}: všichni
+
+    \item \textbf{Seznam stanic} - akce: 6.4 Seznam stanic\\
+        \textit{Zodpovědnost}: všichni
+        \begin{enumerate}
+            \item \textbf{Detail stanice} - akce: 6.5 Detail stanice
+        \end{enumerate}
+
+    \item \textbf{Vlaková společnost}
+        \textit{Zodpovědnost}: Admin, Vlaková společnost
+        \begin{enumerate}
+            \item \textbf{Správa spojů}
+            \item \textbf{Správa jízd}
+            \item \textbf{Správa příjezdů}
+        \end{enumerate}
+    
+    \item \textbf{Administrace}
+        \textit{Zodpovědnost}: Admin
+        \begin{enumerate}
+            \item \textbf{Správa uživatelů}
+            \item \textbf{Správa společností}
+            \item \textbf{Správa stanic}
+            \item \textbf{Správa měst}
+        \end{enumerate}
+\end{enumerate}
+
+% ----------------------------- Návrh formulářů ----------------------------
+
+\subsection{Návrh formulářů}
+
+\subsubsection*{2.4 Detail jízdy}
+
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{formular1.png}
+    \centering
+    \caption{Detail jízdy}
+    \label{vystup}
+\end{figure}
+
+\subsubsection*{3.3 Seznam jízdenek}
+
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{formular2.png}
+    \centering
+    \caption{Seznam jízdenek}
+    \label{vystup}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%}
+\end{document}
