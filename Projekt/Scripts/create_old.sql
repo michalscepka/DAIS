@@ -5,7 +5,8 @@ ALTER TABLE prijezd DROP CONSTRAINT prijezd_spoj_fk;
 ALTER TABLE jizdenka DROP CONSTRAINT jizdenka_uzivatel_fk;
 ALTER TABLE jizdenka DROP CONSTRAINT jizdenka_stanice_fkv2;
 ALTER TABLE jizdenka DROP CONSTRAINT jizdenka_stanice_fk;
-ALTER TABLE jizdenka DROP CONSTRAINT jizdenka_jizda_fk;
+ALTER TABLE jizdenka_jizda DROP CONSTRAINT jizdenka_jizda_fk_jizdenka_fk;
+ALTER TABLE jizdenka_jizda DROP CONSTRAINT jizdenka_jizda_fk_jizda_fk;
 ALTER TABLE jizda DROP CONSTRAINT jizda_spoj_fk;
 ALTER TABLE historie_ceny DROP CONSTRAINT historie_ceny_spoj_fk;
 
@@ -16,6 +17,7 @@ DROP TABLE spoj;
 DROP TABLE prijezd;
 DROP TABLE mesto;
 DROP TABLE jizdenka;
+DROP TABLE jizdenka_jizda;
 DROP TABLE jizda;
 DROP TABLE historie_ceny;
 
@@ -37,16 +39,23 @@ CREATE TABLE Jizda (
 CREATE TABLE Jizdenka (
     jizdenka_id        NUMBER GENERATED ALWAYS AS IDENTITY,
     uzivatel_id        INTEGER NOT NULL,
-    jizda_id           INTEGER NOT NULL,
     stanice_id_start   INTEGER NOT NULL,
     stanice_id_cil     INTEGER NOT NULL,
     cena               INTEGER NOT NULL,
     CONSTRAINT jizdenka_id PRIMARY KEY (jizdenka_id)
 );
 
+CREATE TABLE jizdenka_jizda (
+    jizda_id     INTEGER NOT NULL,
+    jizdenka_id  INTEGER NOT NULL
+);
+
+ALTER TABLE jizdenka_jizda ADD CONSTRAINT jizdenka_jizda_fk_pk PRIMARY KEY ( jizda_id, jizdenka_id );
+
 CREATE TABLE Mesto (
     mesto_id   NUMBER GENERATED ALWAYS AS IDENTITY,
     nazev      VARCHAR(30) NOT NULL,
+    kraj       VARCHAR2(30) NOT NULL,
     CONSTRAINT mesto_id PRIMARY KEY (mesto_id)
 );
 
@@ -71,6 +80,8 @@ CREATE TABLE Spoj (
 CREATE TABLE Spolecnost (
     spolecnost_id   NUMBER GENERATED ALWAYS AS IDENTITY,
     nazev           VARCHAR(20) NOT NULL,
+    web            VARCHAR2(30) NOT NULL,
+    email          VARCHAR2(30) NOT NULL,
     CONSTRAINT spolecnost_id PRIMARY KEY (spolecnost_id)
 );
 
@@ -99,10 +110,14 @@ ALTER TABLE Historie_ceny
 ALTER TABLE Jizda
     ADD CONSTRAINT jizda_spoj_fk FOREIGN KEY ( spoj_id )
         REFERENCES spoj ( spoj_id );
-
-ALTER TABLE Jizdenka
-    ADD CONSTRAINT jizdenka_jizda_fk FOREIGN KEY ( jizda_id )
+        
+ALTER TABLE jizdenka_jizda
+    ADD CONSTRAINT jizdenka_jizda_fk_jizda_fk FOREIGN KEY ( jizda_id )
         REFERENCES jizda ( jizda_id );
+
+ALTER TABLE jizdenka_jizda
+    ADD CONSTRAINT jizdenka_jizda_fk_jizdenka_fk FOREIGN KEY ( jizdenka_id )
+        REFERENCES jizdenka ( jizdenka_id );
 
 ALTER TABLE Jizdenka
     ADD CONSTRAINT jizdenka_stanice_fk FOREIGN KEY ( stanice_id_start )
