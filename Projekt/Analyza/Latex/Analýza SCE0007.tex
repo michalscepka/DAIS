@@ -85,7 +85,7 @@ Potřebujeme informační systém pro zjištění vlakových spojení. Systém m
 Hlavní rolí bude \textbf{správce drah (admin)} což je osoba, která má na starost správu uživatelů. Může vytvořit uživatele \textbf{vlaková společnost}, který může přidávat nebo upravovat záznamy patřící jeho společnosti. Dále bude v systému uživatel \textbf{zákazník}, který si může prohlížet nabídky společností a objednat si jízdenku. Souhrnně budeme všechny role v systému nazývat \textbf{uživatel}.
 
 \subsection{Vstupy}
-Celý systém se bude týkat zejména tras a vlakových spojů na nich. Spoj se skládá z příjezdů do stanic. U spoje nás bude zajímat název spoje, vlaková společnost, cena za jeden ujetý kilometr, kapacita míst a pravidelnost. U stanice nás bude zajímat název stanice a město, ve kterém se nachází. Příjezd bude obsahovat stanici, spoj, čas příjezdu, pořadí příjezdu a vzdálenost od startovní stanice. Jízda bude obsahovat spoj a datum, kdy se bude konat. Jízdenka obsahuje uživatele, kterému patří, seznam jízd, počáteční a cílovou stanici a vypočtenou cenu. Nový spoj, příjezd a jízdu může vytvořit pouze vlaková společnost.
+Celý systém se bude týkat zejména tras a vlakových spojů na nich. Spoj se skládá z příjezdů do stanic. U spoje nás bude zajímat název spoje, vlaková společnost, cena za jeden ujetý kilometr, kapacita míst a pravidelnost. Příjezd bude obsahovat stanici, spoj, čas příjezdu, pořadí příjezdu a vzdálenost od startovní stanice. U stanice nás bude zajímat název stanice a město, ve kterém se nachází. Jízda bude obsahovat spoj a datum, kdy se bude konat. Jízdenka obsahuje uživatele, kterému patří, seznam jízd a vypočtenou cenu. V seznamu jízd v jízdence nás bude zajímat nástupní a výstupní stanice ke každé jízdě. Nový spoj, příjezd a jízdu může vytvořit pouze vlaková společnost.
 
 U uživatele nás bude zajímat login, jméno a příjmení, emailová adresa, typ uživatele a čas poslední návštěvy v systému. Uživatel může mít objednaných mnoho jízdenek.
 
@@ -466,7 +466,7 @@ Funkce najde všechny jízdy s jedním nebo žádným přestupem, které se kona
         j.datum = $p_datum;
     \end{lstlisting}
     
-    \item V cyklu, který se bude konat \textit{\$v\_pocet}-krát, budeme kontrolovat jestli nám funkce \mbox{\textit{NajdiPrimySpoj()}} najde přímé spoje ze stanice \textit{\$p\_start\_stanice\_id} do stanice \textit{\$p\_cil\_stanice\_id} odpovídající časové podmínce.
+    \item V cyklu, který se bude konat \textit{\$v\_pocet}-krát, budeme kontrolovat jestli nám funkce \mbox{\textit{NajdiPrimySpoj()}} najde přímé spoje ze stanice \textit{\$p\_start\_stanice\_id} do stanice \\ \textit{\$p\_cil\_stanice\_id} odpovídající časové podmínce.
     
     \begin{enumerate}
         \item Pokud ano, na výstup pošleme výsledek. Např.:
