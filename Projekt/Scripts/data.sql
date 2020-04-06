@@ -46,42 +46,42 @@ INSERT INTO spolecnost (nazev, web, email) VALUES ('LeoExpress', 'www.leoexpress
 
 SELECT * FROM spolecnost;
 
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('honza1', 'Jan', 'Novak', 'jannovak@gmail.com', 'zakaznik', to_timestamp('2019-12-3 12:30:50', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('janaN', 'Jana', 'Novakova', 'jananovakova@gmail.com', 'zakaznik', to_timestamp('2019-12-2 10:36:52', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('modrp', 'Petr', 'Modry', 'modrp@gmail.com', 'zakaznik', to_timestamp('2019-12-1 22:30:54', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('noobmaster', 'Thor', 'Odinson', 'noobmaster@gmail.com', 'zakaznik', to_timestamp('2019-11-30 23:23:50', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('StarLord', 'Martin', 'Maly', 'malymartin@gmail.com', 'zakaznik', to_timestamp('2019-11-29 11:30:40', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('kral', 'Marek', 'Novak', 'marnov@seznam.cz', 'spravce drah', to_timestamp('2019-12-3 05:30:50', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('Leo', 'Martin', 'Velky', 'leokral@seznam.cz', 'vlakova spolecnost', to_timestamp('2019-12-2 06:30:50', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('regio', 'Martina', 'Velka', 'regio@bing.com', 'vlakova spolecnost', to_timestamp('2019-12-4 08:35:59', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('cesd', 'Jakub', 'Motany', 'mot@gmail.com', 'vlakova spolecnost', to_timestamp('2019-12-5 12:30:58', 'YYYY-MM-DD:HH24:MI:SS'));
-INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva)
-    VALUES ('pepa', 'Pepa', 'Jan', 'pepajan@gmail.com', 'zakaznik', NULL);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('honza1', 'Jan', 'Novak', 'jannovak@gmail.com', 'zakaznik', to_timestamp('2019-12-3 12:30:50', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('janaN', 'Jana', 'Novakova', 'jananovakova@gmail.com', 'zakaznik', to_timestamp('2019-12-2 10:36:52', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('modrp', 'Petr', 'Modry', 'modrp@gmail.com', 'zakaznik', to_timestamp('2019-12-1 22:30:54', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('noobmaster', 'Thor', 'Odinson', 'noobmaster@gmail.com', 'zakaznik', to_timestamp('2019-11-30 23:23:50', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('StarLord', 'Martin', 'Maly', 'malymartin@gmail.com', 'zakaznik', to_timestamp('2019-11-29 11:30:40', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('kral', 'Marek', 'Novak', 'marnov@seznam.cz', 'spravce drah', to_timestamp('2019-12-3 05:30:50', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('Leo', 'Martin', 'Velky', 'leokral@seznam.cz', 'vlakova spolecnost', to_timestamp('2019-12-2 06:30:50', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('regio', 'Martina', 'Velka', 'regio@bing.com', 'vlakova spolecnost', to_timestamp('2019-12-4 08:35:59', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('cesd', 'Jakub', 'Motany', 'mot@gmail.com', 'vlakova spolecnost', to_timestamp('2019-12-5 12:30:58', 'YYYY-MM-DD:HH24:MI:SS'), 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('pepa', 'Pepa', 'Jan', 'pepajan@gmail.com', 'zakaznik', NULL, 1);
 
 SELECT * FROM uzivatel;
 
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('LE 400', 3, 200, 1, 3);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('RJ 106', 2, 150, 1, 2);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('SC 512 Pendolino', 4, 170, 1, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('RJ 1006', 5, 100, 0, 2);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('LE 401', 2, 180, 1, 3);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 400', 3, 200, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 106', 2, 150, 1, 2, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('SC 512 Pendolino', 4, 170, 1, 1, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 1006', 5, 100, 0, 2, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 401', 2, 180, 1, 3, 1);
 ---------- testovaci spoje ------------
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('LE 900', 2, 180, 1, 3);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('RJ 800', 2, 200, 1, 2);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('RJ 801', 2, 200, 1, 2);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 900', 2, 180, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 800', 2, 200, 1, 2, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 801', 2, 200, 1, 2, 1);
 
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('LE 901', 2, 180, 1, 3);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('RJ 802', 2, 200, 1, 2);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id) VALUES ('RJ 803', 2, 200, 1, 2);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 901', 2, 180, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 802', 2, 200, 1, 2, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 803', 2, 200, 1, 2, 1);
 ---------------------------------------
 SELECT * FROM spoj;
 

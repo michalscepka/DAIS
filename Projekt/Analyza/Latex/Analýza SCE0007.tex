@@ -133,12 +133,12 @@ Legenda: \textbf{Tabulka}, \underline{primární klíč}, \textit{cizí klíč},
 \textbf{Mesto} (\underline{mesto\_id}, nazev, kraj)\\
 \textbf{Stanice} (\underline{stanice\_id}, nazev, \textit{mesto\_id})\\
 \textbf{Prijezd} (\textit{stanice\_id}, \textit{spoj\_id}, cas, poradi, vzdalenost)\\
-\textbf{Spoj} (\underline{spoj\_id}, nazev, cena\_za\_km, kapacita\_mist, pravidelny, \textit{spolecnost\_id})\\
+\textbf{Spoj} (\underline{spoj\_id}, nazev, cena\_za\_km, kapacita\_mist, pravidelny, \textit{spolecnost\_id}, aktivni)\\
 \textbf{Spolecnost} (\underline{spolecnost\_id}, nazev, web, email)\\
 \textbf{Jizda} (\underline{jizda\_id}, datum\_start, datum\_cil, \textit{spoj\_id})\\
 \textbf{Jizdenka\_Jizda} (\textit{jizdenka\_id}, \textit{jizda\_id}, \textit{stanice\_id\_start}, \textit{stanice\_id\_cil}, poradi)\\
 \textbf{Jizdenka} (\underline{jizdenka\_id}, \textit{uživatel\_id}, cena)\\
-\textbf{Uzivatel} (\underline{uzivatel\_id}, login, jmeno, prijmeni, email, typ, posledni\_navsteva)\\
+\textbf{Uzivatel} (\underline{uzivatel\_id}, login, jmeno, prijmeni, email, typ, posledni\_navsteva, aktivni)\\
 \textbf{Historie\_ceny} (\underline{history\_id}, cena, datum, \textit{spoj\_id})\\
 
 \subsection{Datový slovník}
@@ -194,6 +194,7 @@ Tabulka \textbf{Spoj}
     kapacita\_mist	& Integer	&	    &	        & ne	&		&       & Kapacita míst \\ \hline
     pravidelny	    & Boolean	&		&           & ne	&		&       & Pravidelnost \\ \hline
     spolecnost\_id	& Integer	&	    & Cizí	    & ne	&		&       & Společnost \\ \hline
+    aktivni	        & Boolean	&		&           & ne	&		&       & Aktivni \\ \hline
     \end{tabular}
 \end{table}
 
@@ -264,6 +265,7 @@ Tabulka \textbf{Uzivatel}
         email	            & Varchar	& 30	& 	        & ne	&	    & 	    & Email uživatele \\ \hline
         typ	                & Varchar	& 20	& 	        & ne	&	    & 1     & Kategorie uživatele \\ \hline
         posledni\_navsteva	& Datetime	& 		&           & ano	&		&       & Datum poslední\\ &&&&&&& návštěvy IS \\ \hline
+        aktivni	            & Boolean	&		&           & ne	&		&       & Aktivni \\ \hline
     \end{tabular}
 \end{table}
 
@@ -317,8 +319,8 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
         \begin{enumerate}
             \item \textbf{Zaregistrování nového uživatele}
             \item \textbf{Aktualizování uživatele}
-            \item \textbf{Zrušení uživatele}
-            \item \textbf{Seznam uživatelů}
+            \item \textbf{Zrušení uživatele} – nastavení hodnoty atributu Uzivatel.aktivni = 0
+            \item \textbf{Seznam uživatelů} – filtrace podle jména
             \item \textbf{Detail uživatele}\\
             \textit{Tabulky:} Uzivatel, Jizdenka
         \end{enumerate}
@@ -330,12 +332,12 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
         \begin{enumerate}
             \item \textbf{Vytvoření nové jízdy}
             \item \underline{\textbf{Aktualizování jízdy}} – aktualizovat je možné jen jízdu, která ještě nezačala
-            \item \textbf{Zrušení jízdy}
+            \item \textbf{Zrušení jízdy} – kaskádové mazání pro zrušení jízdy a všech podřízených záznamů
             \item \underline{\textbf{Vyhledání jízdy}} – dle startovní/cílové stanice, času odjezdu a s jedním nebo žádným přestupem\\
             \textit{Zodpovědnost:} všichni
             \item \textbf{Detail jízdy}\\
             \textit{Zodpovědnost:} všichni
-            \item \underline{\textbf{Vypočítání ceny jízdy}} - podle délky trasy
+            \item \underline{\textbf{Vypočítání ceny jízdy}} – podle délky trasy
         \end{enumerate}
 
     % jizdenky
@@ -346,7 +348,7 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
             \item \textbf{Vytvoření jízdenky}
             \item \underline{\textbf{Zapsání jízdy do jízdenky}} – uživatel si nemůže objednat jízdu do plného vlaku
             \item \underline{\textbf{Zrušení jízdenky}} – uživatel nemůže zrušit jízdenku, pokud zbývá méně než 15 minut do odjezdu
-            \item \textbf{Seznam jízdenek} - zobrazí jízdenky patřící konkrétnímu uživateli
+            \item \textbf{Seznam jízdenek} – zobrazí jízdenky patřící konkrétnímu uživateli
             \item \textbf{Detail jízdenky}\\
             \textit{Tabulky:} všechny\\
             \textit{Zodpovědnost:} všichni
@@ -361,8 +363,8 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
         \begin{enumerate}
             \item \textbf{Vytvoření nového spoje}
             \item \textbf{Aktualizování spoje} – zapsání původní ceny do tabulky Historie\_ceny
-            \item \textbf{Zrušení spoje}
-            \item \textbf{Seznam spojů} - filtrace dle stanic kterými spoje projíždí\\
+            \item \textbf{Zrušení spoje} - nastavení hodnoty atributu Spoj.aktivni = 0
+            \item \textbf{Seznam spojů} – filtrace dle stanic kterými spoje projíždí\\
             \textit{Zodpovědnost:} všichni
             \item \textbf{Detail spoje}\\
             \textit{Tabulky:} všechny\\
@@ -377,7 +379,7 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
             \item \textbf{Vytvoření nového příjezdu}
             \item \textbf{Aktualizování příjezdu}
             \item \textbf{Zrušení příjezdu}
-            \item \textbf{Seznam příjezdů} - filtrace podle stanice, spoje nebo data a času příjezdu\\
+            \item \textbf{Seznam příjezdů} – filtrace podle stanice, spoje nebo data a času příjezdu\\
             \textit{Zodpovědnost:} všichni
             \item \textbf{Detail příjezdu}\\
             \textit{Tabulky:} všechny\\
@@ -389,7 +391,7 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
         \textit{Tabulka:} Stanice\\
         \textit{Zodpovědnost:} všichni
         \begin{enumerate}
-            \item \textbf{Seznam stanic}
+            \item \textbf{Seznam stanic} – filtrace podle názvu stanice
             \item \textbf{Detail stanice}\\
             \textit{Tabulky:} Stanice, Mesto
         \end{enumerate}
@@ -399,7 +401,7 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
         \textit{Tabulka:} Mesto\\
         \textit{Zodpovědnost:} všichni
         \begin{enumerate}
-            \item \textbf{Seznam měst}
+            \item \textbf{Seznam měst} – filtrace podle názvu města
             \item \textbf{Detail města}
         \end{enumerate}
 
@@ -408,7 +410,7 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
         \textit{Tabulka:} Spolecnost\\
         \textit{Zodpovědnost:} všichni
         \begin{enumerate}
-            \item \textbf{Seznam společností}
+            \item \textbf{Seznam společností} – filtrace podle názvu společností
             \item \textbf{Detail společnosti}
         \end{enumerate}
 \end{enumerate}
@@ -422,27 +424,21 @@ Vstup: \textit{\$p\_jizda\_id}, \textit{\$p\_novy\_datum}, \textit{\$p\_novy\_sp
 Funkce zkontroluje, zda jízda, kterou chceme aktualizovat již neproběhla nebo zrovna neprobíhá. Pokud neproběhla nebo neprobíhá, změní příslušné parametry podle vstupních parametrů \textit{\$p\_novy\_datum} a \textit{\$p\_novy\_spoj\_id}. Jinak vypíše chybové hlášení.
 
 \begin{enumerate}
-    \item Do proměnné \textit{\$v\_jizda} uložíme jízdu, kterou chceme aktualizovat:
+    \item Do proměnných \textit{\$v\_start\_cas} a \textit{\$v\_start\_datum} uložíme čas a datum prvního příjezdu spoje:
     \begin{lstlisting}
-    SELECT * FROM Jizda WHERE jizda_id = $p_jizda_id;
-    \end{lstlisting}
-
-    \item Do proměnné \textit{\$v\_start\_cas} uložíme čas prvního příjezdu spoje:
-    \begin{lstlisting}
-    SELECT p.cas FROM Prijezd p
+    SELECT p.cas, j.datum_start
+    FROM Prijezd p
         JOIN Spoj s ON p.spoj_id = s.spoj_id
         JOIN Jizda j ON s.spoj_id = j.spoj_id
-    WHERE p.spoj_id = $v_jizda.spoj_id AND
-        j.datum_start = $v_jizda.datum_start AND
-        p.poradi IN (SELECT MIN(poradi) FROM prijezd WHERE spoj_id = $v_jizda.spoj_id);
+    WHERE j.jizda_id = $p_jizda_id AND p.poradi = 1;
     \end{lstlisting}
     
-    \item Pokud \textit{\$v\_jizda.datum} $>$ aktuální datum nebo \textit{\$v\_jizda.datum} = aktuální datum a zároveň \textit{\$v\_start\_cas} $<$ aktuální čas. Aktualizujeme záznam:
+    \item Pokud \textit{\$v\_start\_datum} $>$ aktuální datum nebo \textit{\$v\_start\_datum} = aktuální datum a zároveň \textit{\$v\_start\_cas} $<$ aktuální čas. Aktualizujeme záznam:
     \begin{lstlisting}
     UPDATE Jizda
     SET Jizda.datum_start = $p_novy_datum,
         Jizda.spoj_id = $p_novy_spoj_id
-    WHERE Jizda.jizda_id = $v_jizda.jizda_id;
+    WHERE Jizda.jizda_id = $p_jizda_id;
     \end{lstlisting}
 
     \item Jinak vypíšeme hlášku „Jízda se již nedá aktualizovat“, vyvoláme výjimku, která zamezí vložení záznamu a proceduru ukončíme.
@@ -463,7 +459,8 @@ Funkce najde všechny jízdy s jedním nebo žádným přestupem, které se kona
         JOIN Jizda j ON s.spoj_id = j.spoj_id
     WHERE p.stanice_id = $p_start_stanice_id AND 
         p.cas >= $p_cas_od AND 
-        j.datum = $p_datum;
+        j.datum = $p_datum AND
+        s.aktivni = 1;
     \end{lstlisting}
     
     \item V cyklu, který se bude konat \textit{\$v\_pocet}-krát, budeme kontrolovat jestli nám funkce \mbox{\textit{NajdiPrimySpoj()}} najde přímé spoje ze stanice \textit{\$p\_start\_stanice\_id} do stanice \\ \textit{\$p\_cil\_stanice\_id} odpovídající časové podmínce.
@@ -485,7 +482,8 @@ Funkce najde všechny jízdy s jedním nebo žádným přestupem, které se kona
         JOIN Jizda j ON s.spoj_id = j.spoj_id
     WHERE p.stanice_id = $p_start_stanice_id AND
         p.cas >= $p_cas_od AND 
-        j.datum = $p_datum
+        j.datum = $p_datum AND
+        s.aktivni = 1
     ORDER BY p.cas
         \end{lstlisting}
 
@@ -517,7 +515,7 @@ Funkce najde všechny jízdy s jedním nebo žádným přestupem, které se kona
 
 \subsubsection*{2.6 Vypočítání ceny jízdy}
 Vstup: \textit{\$p\_stanice\_id\_start}, \textit{\$p\_stanice\_id\_cil}, \textit{\$p\_jizda\_id}\\
-Funkce vypočítá cenu jízdenky podle vstupních parametrů a vrátí výsledek.
+Funkce vypočítá cenu jízdy podle vstupních parametrů a vrátí výsledek.
 
 \begin{enumerate}
     \item Do proměnné \textit{\$v\_start\_vzdalenost} uložíme vzdálenost dle \textit{\$p\_stanice\_id\_start} a \textit{\$p\_jizda\_id}:
@@ -569,7 +567,7 @@ Funkce zkontroluje, zda zbývají volná místa ve spoji na který je vázaná j
     \begin{lstlisting}
     SELECT kapacita_mist FROM Spoj s
         JOIN Jizda j ON s.spoj_id = j.spoj_id
-    WHERE jizda_id = $p_jizda_id;
+    WHERE jizda_id = $p_jizda_id AND s.aktivni = 1;
     \end{lstlisting}
 
     \item Pokud \textit{\$v\_pocet\_jizdenek} $<$ \textit{\$v\_pocet\_mist}, přidáme záznam do tabulky \textit{Jizdenka\_Jizda}:
@@ -631,7 +629,7 @@ Funkce zkontroluje, zda nezbývá 15 minut do odjezdu vlaku. Pokud zbývá více
 \subsection{Menu}
 
 \begin{enumerate}
-    \item \textbf{Můj profil} – akce: 1.5 Detail uživatele\\
+    \item \textbf{Můj profil} – akce: 1.4 Detail uživatele\\
         \textit{Zodpovědnost}: všichni
         \begin{enumerate}
             \item \textbf{Upravit profil} - akce: 1.2 Aktualizování uživatele

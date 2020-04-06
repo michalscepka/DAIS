@@ -626,7 +626,7 @@ SELECT *
 FROM Jizdenka j
     LEFT JOIN jizdenka_jizda jj ON j.jizdenka_Id = jj.jizdenka_id;
 
-EXEC PridatJizduDoJizdenky(18, 3, 1, 4);
+EXEC PridatJizduDoJizdenky(16, 3, 1, 4);
 
 DELETE FROM jizdenka_jizda WHERE jizdenka_id = 17
 DELETE FROM jizdenka WHERE jizdenka_id = 17

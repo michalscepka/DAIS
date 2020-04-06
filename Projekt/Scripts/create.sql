@@ -78,6 +78,7 @@ CREATE TABLE Spoj (
     kapacita_mist   INTEGER NOT NULL,
     pravidelny      NUMBER(1) NOT NULL,
     spolecnost_id   INTEGER NOT NULL,
+    aktivni         CHAR(1) NOT NULL,
     CONSTRAINT spoj_id PRIMARY KEY (spoj_id)
 );
 
@@ -104,6 +105,7 @@ CREATE TABLE Uzivatel (
     email               VARCHAR(30) NOT NULL,
     typ                 VARCHAR(20) NOT NULL,
     posledni_navsteva   TIMESTAMP(3),
+    aktivni        CHAR(1) NOT NULL,
     CONSTRAINT uzivatel_id PRIMARY KEY (uzivatel_id)
 );
 
