@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5CFBB7E2-3CC6-4639-82AD-67A11081080A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Projekt</RootNamespace>
+    <AssemblyName>Projekt</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database\DAO\Database.cs" />
+    <Compile Include="Database\DAO\HistorieCenyTable.cs" />
+    <Compile Include="Database\DAO\JizdaTable.cs" />
+    <Compile Include="Database\DAO\JizdenkaJizdaTable.cs" />
+    <Compile Include="Database\DAO\JizdenkaTable.cs" />
+    <Compile Include="Database\DAO\MestoTable.cs" />
+    <Compile Include="Database\DAO\PrijezdTable.cs" />
+    <Compile Include="Database\DAO\SpojTable.cs" />
+    <Compile Include="Database\DAO\SpolecnostTable.cs" />
+    <Compile Include="Database\DAO\StaniceTable.cs" />
+    <Compile Include="Database\DAO\UserTable.cs" />
+    <Compile Include="Database\DAO\UzivatelTable.cs" />
+    <Compile Include="Database\HistorieCeny.cs" />
+    <Compile Include="Database\Jizda.cs" />
+    <Compile Include="Database\Jizdenka.cs" />
+    <Compile Include="Database\JizdenkaJizda.cs" />
+    <Compile Include="Database\Mesto.cs" />
+    <Compile Include="Database\Prijezd.cs" />
+    <Compile Include="Database\Spoj.cs" />
+    <Compile Include="Database\Spolecnost.cs" />
+    <Compile Include="Database\Stanice.cs" />
+    <Compile Include="Database\User.cs" />
+    <Compile Include="Database\Uzivatel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
