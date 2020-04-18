@@ -54,7 +54,6 @@
     <Compile Include="Database\DAO\SpojTable.cs" />
     <Compile Include="Database\DAO\SpolecnostTable.cs" />
     <Compile Include="Database\DAO\StaniceTable.cs" />
-    <Compile Include="Database\DAO\UserTable.cs" />
     <Compile Include="Database\DAO\UzivatelTable.cs" />
     <Compile Include="Database\HistorieCeny.cs" />
     <Compile Include="Database\Jizda.cs" />
@@ -65,7 +64,6 @@
     <Compile Include="Database\Spoj.cs" />
     <Compile Include="Database\Spolecnost.cs" />
     <Compile Include="Database\Stanice.cs" />
-    <Compile Include="Database\User.cs" />
     <Compile Include="Database\Uzivatel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

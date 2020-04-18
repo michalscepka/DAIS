@@ -136,7 +136,7 @@ GO
 ALTER TABLE Jizdenka_Jizda 
     ADD CONSTRAINT Jizdenka_Jizda_Jizda_FK FOREIGN KEY (  jizda_id ) 
     REFERENCES Jizda (  jizda_id ) 
-    ON DELETE NO ACTION 
+    ON DELETE CASCADE 
     ON UPDATE NO ACTION 
 GO
 

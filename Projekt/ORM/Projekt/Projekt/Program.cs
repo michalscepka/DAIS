@@ -11,7 +11,9 @@ namespace Projekt
             Database db = new Database();
             db.Connect();
 
-            Uzivatel u = new Uzivatel();
+            //Uzivatel
+
+            /*Uzivatel u = new Uzivatel();
             u.Id = 11;
             u.Login = "son28";
             u.Jmeno = "Tonda";
@@ -19,7 +21,7 @@ namespace Projekt
             u.Email = "email";
             u.Typ = "zakaznik";
             u.PosledniNavsteva = null;
-            u.Aktivni = true;
+            u.Aktivni = true;*/
 
             //UzivatelTable.Insert(u, db);
             //UzivatelTable.Update(u, db);
@@ -33,8 +35,47 @@ namespace Projekt
             Console.WriteLine("#D: " + dltCount);
             Console.WriteLine("#C: " + count2);*/
 
-            foreach (Uzivatel uzivatel in UzivatelTable.SelectByName("ma", db))
-                Console.WriteLine(uzivatel.FullName);
+            foreach (Uzivatel item in UzivatelTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //UzivatelTable.Delete(1);
+
+            //Console.WriteLine(UzivatelTable.Select(1).ToString());
+
+            //Jizda
+
+            foreach (Jizda item in JizdaTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //Jizdenka
+
+            foreach (Jizdenka item in JizdenkaTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //Spoj
+
+            foreach (Spoj item in SpojTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //Prijezd
+
+            foreach (Prijezd item in PrijezdTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //Stanice
+
+            foreach (Stanice item in StaniceTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //Mesto
+
+            foreach (Mesto item in MestoTable.Select(db))
+                Console.WriteLine(item.ToString());
+
+            //Spolecnost
+
+            foreach (Spolecnost item in SpolecnostTable.Select(db))
+                Console.WriteLine(item.ToString());
 
             db.Close();
         }

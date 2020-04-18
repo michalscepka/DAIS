@@ -13,9 +13,15 @@ namespace Projekt.ORM
 		public string Typ { get; set; }
 		public DateTime? PosledniNavsteva { get; set; }
 		public bool Aktivni { get; set; }
+
 		public List<Jizdenka> Jizdenky { get; set; } = new List<Jizdenka>();
 
 		//Artificial columns (physically not in the database)
 		public string FullName { get { return Jmeno + " " + Prijmeni; } }
+
+		public override string ToString()
+		{
+			return string.Format("Uzivatel {0}: {1}, {2}, {3}, {4}, PosledniNavsteva: {5}, Aktivni: {6}", Id, Login, FullName, Email, Typ, PosledniNavsteva, Aktivni);
+		}
 	}
 }
