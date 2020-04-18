@@ -32,7 +32,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Spolecnost> spolecnost = Read(reader, true);
+            Collection<Spolecnost> spolecnosti = Read(reader, true);
             reader.Close();
 
             if (pDb == null)
@@ -40,7 +40,7 @@ namespace Projekt.ORM.DAO
                 db.Close();
             }
 
-            return spolecnost;
+            return spolecnosti;
         }
 
         /// <summary>
