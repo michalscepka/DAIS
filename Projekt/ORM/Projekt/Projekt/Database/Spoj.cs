@@ -10,12 +10,7 @@ namespace Projekt.ORM
 		public int KapacitaMist { get; set; }
 		public bool Pravidelny { get; set; }
 		public int SpolecnostId { get; set; }
-		public Spolecnost Spolecnost { get; set; }
 		public bool Aktivni { get; set; }
-
-		public List<HistorieCeny> HistorieCeny { get; set; } = new List<HistorieCeny>();
-		public List<Jizda> Jizdy { get; set; } = new List<Jizda>();
-		public List<Prijezd> Prijezdy { get; set; } = new List<Prijezd>();
 
 		public override string ToString()
 		{

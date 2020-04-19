@@ -9,9 +9,6 @@ namespace Projekt.ORM
 		public DateTime DatumStart { get; set; }
 		public DateTime DatumCil { get; set; }
 		public int SpojId { get; set; }
-		public Spoj Spoj { get; set; }
-
-		public List<JizdenkaJizda> Jizdenky { get; set; } = new List<JizdenkaJizda>();
 
 		public override string ToString()
 		{

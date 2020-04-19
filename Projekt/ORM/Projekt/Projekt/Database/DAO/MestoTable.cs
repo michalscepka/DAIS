@@ -7,15 +7,12 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Mesto";
 
-        public static string SQL_SELECT = "SELECT * FROM Mesto";
-        public static string SQL_SELECT_NAME = "SELECT mesto_id, nazev, kraj FROM Mesto WHERE nazev LIKE \'%\' + @input + \'%\'";
-        public static string SQL_SELECT_ID = "SELECT mesto_id, nazev, kraj FROM Mesto WHERE mesto_id = @id";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Mesto";
+        public static string SQL_SELECT_BY_NAME = "SELECT * FROM Mesto WHERE nazev LIKE \'%\' + @input + \'%\'";
+        public static string SQL_SELECT_ID = "SELECT * FROM Mesto WHERE mesto_id = @id";
 
-        /// <summary>
-        /// 7.1. Seznam měst.
-        /// </summary>
-        /// <param name="id">user id</param>
-        public static Collection<Mesto> Select(string input, Database pDb = null)
+        // 7.1. Seznam měst.
+        public static Collection<Mesto> SelectSeznam(string input, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -28,7 +25,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT_NAME);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_BY_NAME);
             command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
@@ -43,11 +40,8 @@ namespace Projekt.ORM.DAO
             return mesta;
         }
 
-        /// <summary>
-        /// 7.2. Detail města.
-        /// </summary>
-        /// <param name="id">user id</param>
-        public static Mesto Select(int id, Database pDb = null)
+        // 7.2. Detail města.
+        public static Mesto SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -80,9 +74,7 @@ namespace Projekt.ORM.DAO
             return user;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
+        // Select all records.
         public static Collection<Mesto> Select(Database pDb = null)
         {
             Database db;
@@ -96,7 +88,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
             Collection<Mesto> mesta = Read(reader, false);

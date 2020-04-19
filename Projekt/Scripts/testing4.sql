@@ -113,4 +113,3 @@ SELECT * FROM Jizdenka
 SELECT * FROM Spoj
 
 SELECT * FROM Prijezd
-

@@ -14,8 +14,6 @@ namespace Projekt.ORM
 		public DateTime? PosledniNavsteva { get; set; }
 		public bool Aktivni { get; set; }
 
-		public List<Jizdenka> Jizdenky { get; set; } = new List<Jizdenka>();
-
 		//Artificial columns (physically not in the database)
 		public string FullName { get { return Jmeno + " " + Prijmeni; } }
 

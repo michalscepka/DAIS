@@ -7,9 +7,9 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Spoj";
 
-        public static string SQL_SELECT = "SELECT * FROM Spoj";
-        public static string SQL_SELECT_ID = "";
-        public static string SQL_SELECT_NAME = "";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Spoj";
+        public static string SQL_SELECT_ID = "SELECT * FROM Spoj WHERE spoj_id=@id";
+        public static string SQL_SELECT_BY_STANICE = "SELECT * FROM Spoj s JOIN Prijezd p ON s.spoj_id = p.spoj_id WHERE p.stanice_id=@id";
         public static string SQL_INSERT = "INSERT INTO Spoj VALUES (@nazev, @cena_za_km, @kapacita_mist, @pravidelny, @spolecnost_id, @aktivni)";
         public static string SQL_DELETE_ID = "UPDATE Spoj SET aktivni = 0 WHERE spoj_id = @id";
         public static string SQL_UPDATE = "UPDATE Spoj SET nazev=@nazev, cena_za_km=@cena_za_km, kapacita_mist=@kapacita_mist, pravidelny=@pravidelny, " +
@@ -101,10 +101,8 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 4.4. Seznam spojů.
-        /// </summary>
-        public static Collection<Spoj> Select(string input, Database pDb = null)    // TODO
+        // 4.4. Seznam spojů.
+        public static Collection<Spoj> SelectSeznam(int stanice_id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -117,8 +115,8 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT_NAME);
-            command.Parameters.AddWithValue("@input", input);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_BY_STANICE);
+            command.Parameters.AddWithValue("@id", stanice_id);
             SqlDataReader reader = db.Select(command);
 
             Collection<Spoj> spoje = Read(reader);
@@ -132,11 +130,8 @@ namespace Projekt.ORM.DAO
             return spoje;
         }
 
-        /// <summary>
-        /// 4.5. Detail spoje.
-        /// </summary>
-        /// <param name="id">spoj id</param>
-        public static Spoj Select(int id, Database pDb = null)  // TODO
+        // 4.5. Detail spoje.
+        public static Spoj SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -169,10 +164,8 @@ namespace Projekt.ORM.DAO
             return spoj;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Spoj> Select(Database pDb = null)
+        // Select all records.
+        public static Collection<Spoj> SelectAll(Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -185,7 +178,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
             Collection<Spoj> spoje = Read(reader);
@@ -199,9 +192,6 @@ namespace Projekt.ORM.DAO
             return spoje;
         }
 
-        /// <summary>
-        ///  Prepare a command.
-        /// </summary>
         private static void PrepareCommand(SqlCommand command, Spoj spoj)
         {
             command.Parameters.AddWithValue("@id", spoj.Id);

@@ -8,7 +8,6 @@ namespace Projekt.ORM
 		public int Cena { get; set; }
 		public DateTime Datum { get; set; }
 		public int SpojId { get; set; }
-		public Spoj Spoj { get; set; }
 
 		public override string ToString()
 		{

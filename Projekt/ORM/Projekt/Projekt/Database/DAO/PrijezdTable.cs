@@ -8,18 +8,16 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Prijezd";
 
-        public static string SQL_SELECT = "SELECT stanice_id, spoj_id, CAST(cas AS DATETIME), poradi, vzdalenost FROM Prijezd";
-        public static string SQL_SELECT_ID = "SELECT p.stanice_id, p.spoj_id, CAST(p.cas AS DATETIME), p.poradi, p.vzdalenost, st.nazev, s.nazev " +
-            "FROM Prijezd p JOIN Stanice st ON p.stanice_id = st.stanice_id JOIN Spoj s ON p.spoj_id = s.spoj_id WHERE p.stanice_id=@stanice_id AND p.spoj_id=@spoj_id";
+        public static string SQL_SELECT_ALL = "SELECT stanice_id, spoj_id, CAST(cas AS DATETIME), poradi, vzdalenost FROM Prijezd";
+        public static string SQL_SELECT_ID = "SELECT stanice_id, spoj_id, CAST(cas AS DATETIME), poradi, vzdalenost FROM Prijezd " +
+            "WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
         public static string SQL_SELECT_BY_ARIBUTES = "EXEC SeznamPrijezdu @stanice, @spoj, @cas, @datum";
         public static string SQL_INSERT = "INSERT INTO Prijezd(stanice_id, spoj_id, cas, poradi, vzdalenost) " +
             "VALUES(@stanice_id, @spoj_id, @cas, @poradi, @vzdalenost)";
         public static string SQL_DELETE_ID = "DELETE FROM Prijezd WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
         public static string SQL_UPDATE = "UPDATE Prijezd SET cas=@cas, poradi=@poradi, vzdalenost=@vzdalenost WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
 
-        /// <summary>
-        /// 5.1. Vytvoření nového příjezdu.
-        /// </summary>
+        // 5.1. Vytvoření nového příjezdu.
         public static int Insert(Prijezd prijezd, Database pDb = null)
         {
             Database db;
@@ -45,9 +43,7 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 5.2. Aktualizování příjezdu.
-        /// </summary>
+        // 5.2. Aktualizování příjezdu.
         public static int Update(Prijezd prijezd, Database pDb = null)
         {
             Database db;
@@ -73,12 +69,7 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 5.3. Zrušení příjezdu.
-        /// </summary>
-        /// <param name="stanice_id">stanice id</param>
-        /// <param name="spoj_id">spoj id</param>
-        /// <returns></returns>
+        // 5.3. Zrušení příjezdu.
         public static int Delete(int stanice_id, int spoj_id, Database pDb = null)
         {
             Database db;
@@ -105,10 +96,8 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 5.4. Seznam příjezdů.
-        /// </summary>
-        public static Collection<Prijezd> Select(string stanice, string spoj, DateTime cas, DateTime datum, Database pDb = null)
+        // 5.4. Seznam příjezdů.
+        public static Collection<Prijezd> SelectSeznam(string stanice, string spoj, DateTime cas, DateTime datum, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -128,7 +117,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@datum", datum);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Prijezd> prijezdy = Read(reader, true);
+            Collection<Prijezd> prijezdy = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -139,12 +128,8 @@ namespace Projekt.ORM.DAO
             return prijezdy;
         }
 
-        /// <summary>
-        /// 5.5. Detail příjezdu.
-        /// </summary>
-        /// <param name="stanice_id">stanice id</param>
-        /// <param name="spoj_id">spoj id</param>
-        public static Prijezd Select(int stanice_id, int spoj_id, Database pDb = null)
+        // 5.5. Detail příjezdu.
+        public static Prijezd SelectDetail(int stanice_id, int spoj_id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -162,7 +147,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@spoj_id", spoj_id);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Prijezd> prijezdy = Read(reader, false);
+            Collection<Prijezd> prijezdy = Read(reader);
             Prijezd prijezd = null;
             if (prijezdy.Count == 1)
             {
@@ -178,10 +163,8 @@ namespace Projekt.ORM.DAO
             return prijezd;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Prijezd> Select(Database pDb = null)
+        // Select all records.
+        public static Collection<Prijezd> SelectAll(Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -194,10 +177,10 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Prijezd> prijezdy = Read(reader, false);
+            Collection<Prijezd> prijezdy = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -208,9 +191,6 @@ namespace Projekt.ORM.DAO
             return prijezdy;
         }
 
-        /// <summary>
-        ///  Prepare a command.
-        /// </summary>
         private static void PrepareCommand(SqlCommand command, Prijezd prijezd)
         {
             command.Parameters.AddWithValue("@stanice_id", prijezd.StaniceId);
@@ -220,11 +200,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@vzdalenost", prijezd.Vzdalenost);
         }
 
-        /// <summary>
-        /// Read
-        /// </summary>
-        /// <param name="complete">true - all attribute values must be read</param>
-        private static Collection<Prijezd> Read(SqlDataReader reader, bool complete)
+        private static Collection<Prijezd> Read(SqlDataReader reader)
         {
             Collection<Prijezd> prijezdy = new Collection<Prijezd>();
 
@@ -239,19 +215,6 @@ namespace Projekt.ORM.DAO
                     Poradi = reader.GetInt32(++i),
                     Vzdalenost = reader.GetInt32(++i)
                 };
-
-                if (complete)
-                {
-                    prijezd.Stanice = new Stanice { Nazev = reader.GetString(++i) };
-                    prijezd.Spoj = new Spoj { Nazev = reader.GetString(++i) };
-
-                    Jizda jizda = new Jizda
-                    {
-                        DatumStart = reader.GetDateTime(++i),
-                        DatumCil = reader.GetDateTime(++i)
-                    };
-                    prijezd.Spoj.Jizdy.Add(jizda);
-                }
 
                 prijezdy.Add(prijezd);
             }

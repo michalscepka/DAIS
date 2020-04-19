@@ -30,10 +30,10 @@ CREATE TABLE Historie_ceny (
 GO
 
 CREATE TABLE Jizda (
-    jizda_id   INTEGER PRIMARY KEY IDENTITY,
-    datum_start  DATE NOT NULL,
-    datum_cil    DATE NOT NULL,
-    spoj_id    INTEGER NOT NULL
+    jizda_id	INTEGER PRIMARY KEY IDENTITY,
+    datum_start	DATE NOT NULL,
+    datum_cil   DATE NOT NULL,
+    spoj_id		INTEGER NOT NULL
 )
 GO
 

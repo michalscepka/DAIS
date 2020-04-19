@@ -7,16 +7,14 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Jizdenka";
 
-        public static string SQL_SELECT = "SELECT * FROM Jizdenka";
-        public static string SQL_SELECT_ID = "";
-        public static string SQL_SELECT_USER = "";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Jizdenka";
+        public static string SQL_SELECT_ID = "SELECT * FROM Jizdenka WHERE jizdenka_id=@id";
+        public static string SQL_SELECT_BY_USER = "SELECT * FROM Jizdenka WHERE uzivatel_id=@id";
         public static string SQL_INSERT = "INSERT INTO Jizdenka VALUES (@uzivatel_id, @cena)";
-        public static string SQL_DELETE_ID = "";
-        public static string SQL_ZAPSAT_JIZDU = "";
+        public static string SQL_DELETE_ID = "EXEC ZrusitJizdenku @id";
+        public static string SQL_ZAPSAT_JIZDU = "EXEC PridatJizduDoJizdenky @jizdenka_id, @jizda_id, @stanice_id_start, @stanice_id_cil";
 
-        /// <summary>
-        /// 3.1. Vytvoření jízdenky.
-        /// </summary>
+        // 3.1. Vytvoření jízdenky.
         public static int Insert(Jizdenka jizdenka, Database pDb = null)
         {
             Database db;
@@ -42,21 +40,38 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 3.2. Zapsání jízdy do jízdenky.
-        /// </summary>
-        /// <param name="uzivatel_id">uzivatel id</param>
-        public static int ZapsatJizdu() // TODO Netrivialni
+        // 3.2. Zapsání jízdy do jízdenky.
+        public static int ZapsatJizdu(int jizdenka_id, int jizda_id, int stanice_id_start, int stanice_id_cil, Database pDb = null)
         {
-            return 0;
+            Database db;
+            if (pDb == null)
+            {
+                db = new Database();
+                db.Connect();
+            }
+            else
+            {
+                db = pDb;
+            }
+
+            SqlCommand command = db.CreateCommand(SQL_ZAPSAT_JIZDU);
+
+            command.Parameters.AddWithValue("@jizdenka_id", jizdenka_id);
+            command.Parameters.AddWithValue("@jizda_id", jizda_id);
+            command.Parameters.AddWithValue("@stanice_id_start", stanice_id_start);
+            command.Parameters.AddWithValue("@stanice_id_cil", stanice_id_cil);
+            int ret = db.ExecuteNonQuery(command);
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+
+            return ret;
         }
 
-        /// <summary>
-        /// 3.3. Zrušení jízdenky.
-        /// </summary>
-        /// <param name="jizdenka_id">jizdenka id</param>
-        /// <returns></returns>
-        public static int Delete(int jizdenka_id, Database pDb = null)  // TODO Netrivialni
+        // 3.3. Zrušení jízdenky.
+        public static int Delete(int jizdenka_id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -81,10 +96,8 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 3.4. Seznam jízdenek.
-        /// </summary>
-        public static Collection<Jizdenka> SelectSeznam(int uzivatel_id, Database pDb = null)   // TODO
+        // 3.4. Seznam jízdenek.
+        public static Collection<Jizdenka> SelectSeznam(int uzivatel_id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -97,8 +110,8 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT_USER);
-            command.Parameters.AddWithValue("@uzivatel_id", uzivatel_id);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_BY_USER);
+            command.Parameters.AddWithValue("@id", uzivatel_id);
             SqlDataReader reader = db.Select(command);
 
             Collection<Jizdenka> jizdenky = Read(reader);
@@ -112,11 +125,8 @@ namespace Projekt.ORM.DAO
             return jizdenky;
         }
 
-        /// <summary>
-        /// 3.5. Detail jízdenky.
-        /// </summary>
-        /// <param name="id">uzivatel id</param>
-        public static Jizdenka Select(int id, Database pDb = null)  // TODO
+        // 3.5. Detail jízdenky.
+        public static Jizdenka SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -149,10 +159,8 @@ namespace Projekt.ORM.DAO
             return jizdenka;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Jizdenka> Select(Database pDb = null)
+        // Select all records.
+        public static Collection<Jizdenka> SelectAll(Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -165,7 +173,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
             Collection<Jizdenka> jizdenky = Read(reader);
@@ -179,9 +187,6 @@ namespace Projekt.ORM.DAO
             return jizdenky;
         }
 
-        /// <summary>
-        ///  Prepare a command.
-        /// </summary>
         private static void PrepareCommand(SqlCommand command, Jizdenka jizdenka)
         {
             command.Parameters.AddWithValue("@id", jizdenka.Id);

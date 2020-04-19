@@ -8,17 +8,15 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Uzivatel";
 
-        public static string SQL_SELECT = "SELECT * FROM Uzivatel";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Uzivatel";
         public static string SQL_SELECT_ID = "SELECT * FROM Uzivatel WHERE uzivatel_id = @id";
-        public static string SQL_SELECT_NAME = "SELECT * FROM Uzivatel WHERE jmeno LIKE \'%\' + @v_input + \'%\' OR prijmeni LIKE \'%\' + @input + \'%\';";
+        public static string SQL_FILTER_BY_NAME = "SELECT * FROM Uzivatel WHERE jmeno LIKE \'%\' + @input + \'%\' OR prijmeni LIKE \'%\' + @input + \'%\';";
         public static string SQL_INSERT = "INSERT INTO Uzivatel VALUES (@login, @jmeno, @prijmeni, @email, @typ, @posledni_navsteva, @aktivni)";
         public static string SQL_DELETE_ID = "UPDATE Uzivatel SET aktivni = 0 WHERE uzivatel_id = @id";
         public static string SQL_UPDATE = "UPDATE Uzivatel SET login=@login, jmeno=@jmeno, prijmeni=@prijmeni," +
             "email=@email, typ=@typ, posledni_navsteva=@posledni_navsteva, aktivni=@aktivni WHERE uzivatel_id=@id";
 
-        /// <summary>
-        /// 1.1. Zaregistrování nového uživatele.
-        /// </summary>
+        // 1.1. Zaregistrování nového uživatele.
         public static int Insert(Uzivatel uzivatel, Database pDb = null)
         {
             Database db;
@@ -44,9 +42,7 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 1.2. Aktualizování uživatele.
-        /// </summary>
+        // 1.2. Aktualizování uživatele.
         public static int Update(Uzivatel uzivatel, Database pDb = null)
         {
             Database db;
@@ -72,11 +68,7 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 1.3. Zrušení uživatele.
-        /// </summary>
-        /// <param name="uzivatel_id">uzivatel id</param>
-        /// <returns></returns>
+        // 1.3. Zrušení uživatele.
         public static int Delete(int uzivatel_id, Database pDb = null)
         {
             Database db;
@@ -102,10 +94,8 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 1.4. Seznam uživatelů.
-        /// </summary>
-        public static Collection<Uzivatel> Select(string input, Database pDb = null)
+        // 1.4. Seznam uživatelů.
+        public static Collection<Uzivatel> SelectSeznam(string input, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -118,7 +108,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT_NAME);
+            SqlCommand command = db.CreateCommand(SQL_FILTER_BY_NAME);
             command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
@@ -133,11 +123,8 @@ namespace Projekt.ORM.DAO
             return users;
         }
 
-        /// <summary>
-        /// 1.5. Detail uživatele.
-        /// </summary>
-        /// <param name="id">uzivatel id</param>
-        public static Uzivatel Select(int id, Database pDb = null)
+        // 1.5. Detail uživatele.
+        public static Uzivatel SelectDetail(int id, Database pDb = null)  // TODO
         {
             Database db;
             if (pDb == null)
@@ -170,10 +157,8 @@ namespace Projekt.ORM.DAO
             return user;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Uzivatel> Select(Database pDb = null)
+        // Select all records.
+        public static Collection<Uzivatel> SelectAll(Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -186,7 +171,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
             Collection<Uzivatel> users = Read(reader);
@@ -200,9 +185,6 @@ namespace Projekt.ORM.DAO
             return users;
         }
 
-        /// <summary>
-        ///  Prepare a command.
-        /// </summary>
         private static void PrepareCommand(SqlCommand command, Uzivatel uzivatel)
         {
             command.Parameters.AddWithValue("@id", uzivatel.Id);
@@ -236,6 +218,9 @@ namespace Projekt.ORM.DAO
                     uzivatel.PosledniNavsteva = reader.GetDateTime(i);
                 }
                 uzivatel.Aktivni = reader.GetBoolean(++i);
+
+
+                //COUNT PYCO / iterovat dokud neprojdu vsechny jizdenky uzivatele
 
                 uzivatele.Add(uzivatel);
             }

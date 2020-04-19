@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Projekt.ORM.DAO
@@ -7,16 +9,15 @@ namespace Projekt.ORM.DAO
     {
         public static string TABLE_NAME = "Jizda";
 
-        public static string SQL_SELECT = "SELECT * FROM Jizda";
-        public static string SQL_SELECT_ID = "";
-        public static string SQL_SELECT_BY_ARIBUTES = "";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Jizda";
+        public static string SQL_SELECT_ID = "SELECT * FROM Jizda WHERE jizda_id=@id";
+        public static string SQL_FILTER_BY_ARIBUTES = "EXEC NajitJizdu @start_stanice_id, @cil_stanice_id, @datum, @cas_od";
         public static string SQL_INSERT = "INSERT INTO Jizda VALUES (@datum_start, @datum_cil, @spoj_id)";
         public static string SQL_DELETE_ID = "DELETE FROM Jizda WHERE jizda_id=@id";
-        public static string SQL_UPDATE = "UPDATE Jizda SET datum_start=@datum_start, datum_cil=@datum_cil, spoj_id=@spoj_id WHERE jizda_id=@id";
+        public static string SQL_UPDATE = "EXEC AktualizovatJizdu @id, @novy_datum_start, @novy_datum_cil, @novy_spoj_id";
+        public static string SQL_SPOCITEJ_CENU = "SELECT dbo.SpocitejCenuJizdy(@jizda_id, @stanice_id_start, @stanice_id_cil) AS cena";
 
-        /// <summary>
-        /// 2.1. Vytvoření nové jízdy.
-        /// </summary>
+        // 2.1. Vytvoření nové jízdy.
         public static int Insert(Jizda jizda, Database pDb = null)
         {
             Database db;
@@ -42,10 +43,8 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 2.2. Aktualizování jízdy.
-        /// </summary>
-        public static int Update(Jizda jizda, Database pDb = null)  // TODO Netrivialni
+        // 2.2. Aktualizování jízdy.
+        public static int Update(Jizda jizda, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -59,7 +58,10 @@ namespace Projekt.ORM.DAO
             }
 
             SqlCommand command = db.CreateCommand(SQL_UPDATE);
-            PrepareCommand(command, jizda);
+            command.Parameters.AddWithValue("@id", jizda.Id);
+            command.Parameters.AddWithValue("@novy_datum_start", jizda.DatumStart);
+            command.Parameters.AddWithValue("@novy_datum_cil", jizda.DatumCil);
+            command.Parameters.AddWithValue("@novy_spoj_id", jizda.SpojId);
             int ret = db.ExecuteNonQuery(command);
 
             if (pDb == null)
@@ -70,11 +72,7 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 2.3. Zrušení jízdy.
-        /// </summary>
-        /// <param name="jizda_id">jizda id</param>
-        /// <returns></returns>
+        // 2.3. Zrušení jízdy.
         public static int Delete(int jizda_id, Database pDb = null)
         {
             Database db;
@@ -100,10 +98,8 @@ namespace Projekt.ORM.DAO
             return ret;
         }
 
-        /// <summary>
-        /// 2.4. Vyhledání jízdy.
-        /// </summary>
-        public static Collection<Jizda> Select(string input, Database pDb = null)    // TODO Netrivialni
+        // 2.4. Vyhledání jízdy.
+        public static Collection<int> NajitJizdu(int start_stanice_id, int cil_stanice_id, DateTime datum, DateTime cas_od, Database pDb = null)    // TODO Netrivialni
         {
             Database db;
             if (pDb == null)
@@ -116,11 +112,22 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT_BY_ARIBUTES);
-            command.Parameters.AddWithValue("@input", input);
+            SqlCommand command = db.CreateCommand(SQL_FILTER_BY_ARIBUTES);
+            command.Parameters.AddWithValue("@start_stanice_id", start_stanice_id);
+            command.Parameters.AddWithValue("@cil_stanice_id", cil_stanice_id);
+            command.Parameters.AddWithValue("@datum", datum);
+            command.Parameters.AddWithValue("@cas_od", cas_od);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Jizda> users = Read(reader);
+            Collection<int> data = new Collection<int>();
+
+            while (reader.Read())
+            {
+                int i = -1;
+                data.Add(reader.GetInt32(++i));
+                data.Add(reader.GetInt32(++i));
+                data.Add(reader.GetInt32(++i));
+            }
             reader.Close();
 
             if (pDb == null)
@@ -128,14 +135,11 @@ namespace Projekt.ORM.DAO
                 db.Close();
             }
 
-            return users;
+            return data;
         }
 
-        /// <summary>
-        /// 2.5. Detail jízdy.
-        /// </summary>
-        /// <param name="id">jizda id</param>
-        public static Jizda Select(int id, Database pDb = null)
+        // 2.5. Detail jízdy.
+        public static Jizda SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -168,19 +172,8 @@ namespace Projekt.ORM.DAO
             return jizda;
         }
 
-        /// <summary>
-        /// 2.6. Vypočítání ceny jízdy.
-        /// </summary>
-        /// <param name="id">jizda id</param>
-        public static int VypocitatCenuJizdy()  // TODO Netrivialni
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Jizda> Select(Database pDb = null)
+        // 2.6. Vypočítání ceny jízdy.
+        public static int VypocitatCenuJizdy(int jizda_id, int stanice_id_start, int stanice_id_cil, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -193,7 +186,31 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SPOCITEJ_CENU);
+            command.Parameters.AddWithValue("@jizda_id", jizda_id);
+            command.Parameters.AddWithValue("@stanice_id_start", stanice_id_start);
+            command.Parameters.AddWithValue("@stanice_id_cil", stanice_id_cil);
+            SqlDataReader reader = db.Select(command);
+
+            reader.Read();
+            return reader.GetInt32(0);
+        }
+
+        // Select all records.
+        public static Collection<Jizda> SelectAll(Database pDb = null)
+        {
+            Database db;
+            if (pDb == null)
+            {
+                db = new Database();
+                db.Connect();
+            }
+            else
+            {
+                db = pDb;
+            }
+
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
             Collection<Jizda> jizdy = Read(reader);
@@ -207,9 +224,6 @@ namespace Projekt.ORM.DAO
             return jizdy;
         }
 
-        /// <summary>
-        ///  Prepare a command.
-        /// </summary>
         private static void PrepareCommand(SqlCommand command, Jizda jizda)
         {
             command.Parameters.AddWithValue("@id", jizda.Id);

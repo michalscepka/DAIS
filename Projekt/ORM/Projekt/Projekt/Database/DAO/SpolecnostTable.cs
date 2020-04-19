@@ -7,15 +7,12 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Spolecnost";
 
-        public static string SQL_SELECT = "SELECT * FROM Spolecnost";
-        public static string SQL_SELECT_NAME = "SELECT spolecnost_id, nazev, web, email FROM Spolecnost WHERE nazev LIKE \'%\' + @input + \'%\'";
-        public static string SQL_SELECT_ID = "SELECT spolecnost_id, nazev, web, email FROM Spolecnost WHERE spolecnost_id = @id";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Spolecnost";
+        public static string SQL_SELECT_NAME = "SELECT * FROM Spolecnost WHERE nazev LIKE \'%\' + @input + \'%\'";
+        public static string SQL_SELECT_ID = "SELECT * FROM Spolecnost WHERE spolecnost_id = @id";
 
-        /// <summary>
-        /// 8.1. Seznam společností.
-        /// </summary>
-        /// <param name="id">user id</param>
-        public static Collection<Spolecnost> Select(string input, Database pDb = null)
+        // 8.1. Seznam společností.
+        public static Collection<Spolecnost> SelectSeznam(string input, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -43,11 +40,8 @@ namespace Projekt.ORM.DAO
             return spolecnosti;
         }
 
-        /// <summary>
-        /// 8.2. Detail společnosti.
-        /// </summary>
-        /// <param name="id">user id</param>
-        public static Spolecnost Select(int id, Database pDb = null)
+        // 8.2. Detail společnosti.
+        public static Spolecnost SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -80,10 +74,8 @@ namespace Projekt.ORM.DAO
             return spolecnost;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Spolecnost> Select(Database pDb = null)
+        // Select all records.
+        public static Collection<Spolecnost> SelectAll(Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -96,7 +88,7 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
             Collection<Spolecnost> spolecnosti = Read(reader, false);

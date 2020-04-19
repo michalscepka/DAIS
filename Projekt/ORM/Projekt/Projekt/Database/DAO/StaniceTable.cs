@@ -7,17 +7,12 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Stanice";
 
-        public static string SQL_SELECT = "SELECT * FROM Stanice";
-        public static string SQL_SELECT_NAME = "SELECT s.stanice_id, s.nazev, s.mesto_id, m.nazev, m.kraj " +
-            "FROM stanice s JOIN Mesto m ON s.mesto_id = m.mesto_id WHERE s.nazev LIKE \'%\' + @input + \'%\'";
-        public static string SQL_SELECT_ID = "SELECT s.stanice_id, s.nazev, s.mesto_id, m.nazev, m.kraj " +
-            "FROM stanice s JOIN Mesto m ON s.mesto_id = m.mesto_id WHERE stanice_id = @id";
+        public static string SQL_SELECT_ALL = "SELECT * FROM Stanice";
+        public static string SQL_SELECT_BY_NAME = "SELECT * FROM stanice WHERE nazev LIKE \'%\' + @input + \'%\'";
+        public static string SQL_SELECT_ID = "SELECT * FROM stanice WHERE stanice_id = @id";
 
-        /// <summary>
-        /// 6.1. Seznam stanic.
-        /// </summary>
-        /// <param name="id">user id</param>
-        public static Collection<Stanice> Select(string input, Database pDb = null)
+        // 6.1. Seznam stanic.
+        public static Collection<Stanice> SelectSeznam(string input, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -30,11 +25,11 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT_NAME);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_BY_NAME);
             command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Stanice> stanice = Read(reader, true);
+            Collection<Stanice> stanice = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -45,11 +40,8 @@ namespace Projekt.ORM.DAO
             return stanice;
         }
 
-        /// <summary>
-        /// 6.2. Detail stanice.
-        /// </summary>
-        /// <param name="id">user id</param>
-        public static Stanice Select(int id, Database pDb = null)
+        // 6.2. Detail stanice.
+        public static Stanice SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -66,7 +58,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@id", id);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Stanice> stanice_arr = Read(reader, true);
+            Collection<Stanice> stanice_arr = Read(reader);
             Stanice stanice = null;
             if (stanice_arr.Count == 1)
             {
@@ -82,10 +74,8 @@ namespace Projekt.ORM.DAO
             return stanice;
         }
 
-        /// <summary>
-        /// Select all records.
-        /// </summary>
-        public static Collection<Stanice> Select(Database pDb = null)
+        // Select all records.
+        public static Collection<Stanice> SelectAll(Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -98,10 +88,10 @@ namespace Projekt.ORM.DAO
                 db = pDb;
             }
 
-            SqlCommand command = db.CreateCommand(SQL_SELECT);
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Stanice> stanice_arr = Read(reader, false);
+            Collection<Stanice> stanice_arr = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -112,7 +102,7 @@ namespace Projekt.ORM.DAO
             return stanice_arr;
         }
 
-        private static Collection<Stanice> Read(SqlDataReader reader, bool complete)
+        private static Collection<Stanice> Read(SqlDataReader reader)
         {
             Collection<Stanice> stanice_arr = new Collection<Stanice>();
 
@@ -125,16 +115,6 @@ namespace Projekt.ORM.DAO
                     Nazev = reader.GetString(++i),
                     MestoId = reader.GetInt32(++i)
                 };
-
-                if(complete)
-                {
-                    stanice.Mesto = new Mesto
-                    {
-                        Id = stanice.MestoId,
-                        Nazev = reader.GetString(++i),
-                        Kraj = reader.GetString(++i)
-                    };
-                }
 
                 stanice_arr.Add(stanice);
             }

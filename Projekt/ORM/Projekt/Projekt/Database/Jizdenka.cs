@@ -6,10 +6,7 @@ namespace Projekt.ORM
 	{
 		public int Id { get; set; }
 		public int UzivatelId { get; set; }
-		public Uzivatel Uzivatel { get; set; }
 		public int Cena { get; set; }
-
-		public List<JizdenkaJizda> Jizdy { get; set; } = new List<JizdenkaJizda>();
 
 		public override string ToString()
 		{
