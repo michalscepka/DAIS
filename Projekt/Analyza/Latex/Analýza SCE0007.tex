@@ -420,8 +420,8 @@ Z pohledu vlakové společnosti a uživatele definujeme tyto typy jízd:
 % ----------------------------- Aktualizování jízdy -----------------------------
 
 \subsubsection*{2.2 Aktualizování jízdy}
-Vstup: \textit{\$p\_jizda\_id}, \textit{\$p\_novy\_datum}, \textit{\$p\_novy\_spoj\_id}\\
-Funkce zkontroluje, zda jízda, kterou chceme aktualizovat již neproběhla nebo zrovna neprobíhá. Pokud neproběhla nebo neprobíhá, změní příslušné parametry podle vstupních parametrů \textit{\$p\_novy\_datum} a \textit{\$p\_novy\_spoj\_id}. Jinak vypíše chybové hlášení.
+Vstup: \textit{\$p\_jizda\_id}, \textit{\$p\_novy\_datum\_start}, \textit{\$p\_novy\_datum\_cil}, \textit{\$p\_novy\_spoj\_id}\\
+Funkce zkontroluje, zda jízda, kterou chceme aktualizovat již neproběhla nebo zrovna neprobíhá. Pokud neproběhla nebo neprobíhá, změní příslušné parametry podle vstupních parametrů \textit{\$p\_novy\_datum\_start}, \textit{\$p\_novy\_datum\_cil} a \textit{\$p\_novy\_spoj\_id}. Jinak vypíše chybové hlášení.
 
 \begin{enumerate}
     \item Do proměnných \textit{\$v\_start\_cas} a \textit{\$v\_start\_datum} uložíme čas a datum prvního příjezdu spoje:
@@ -435,10 +435,11 @@ Funkce zkontroluje, zda jízda, kterou chceme aktualizovat již neproběhla nebo
     
     \item Pokud \textit{\$v\_start\_datum} $>$ aktuální datum nebo \textit{\$v\_start\_datum} = aktuální datum a zároveň \textit{\$v\_start\_cas} $<$ aktuální čas. Aktualizujeme záznam:
     \begin{lstlisting}
-    UPDATE Jizda
-    SET Jizda.datum_start = $p_novy_datum,
-        Jizda.spoj_id = $p_novy_spoj_id
-    WHERE Jizda.jizda_id = $p_jizda_id;
+    UPDATE Jizda 
+    SET datum_start = $p_novy_datum_start, 
+        datum_cil = $p_novy_datum_cil, 
+        spoj_id = $p_novy_spoj_id
+    WHERE jizda_id = $p_jizda_id;
     \end{lstlisting}
 
     \item Jinak vypíšeme hlášku „Jízda se již nedá aktualizovat“, vyvoláme výjimku, která zamezí vložení záznamu a proceduru ukončíme.
@@ -448,64 +449,78 @@ Funkce zkontroluje, zda jízda, kterou chceme aktualizovat již neproběhla nebo
 
 \subsubsection*{2.4 Vyhledání jízdy}
 Vstup: \textit{\$p\_start\_stanice\_id}, \textit{\$p\_cil\_stanice\_id}, \textit{\$p\_datum}, \textit{\$p\_cas\_od}\\
-Funkce najde všechny jízdy s jedním nebo žádným přestupem, které se konají v den zapsaný v proměnné \textit{\$p\_datum} a v čase stejném nebo pozdějším než \textit{\$p\_cas\_od}. Dále jízdy musí projíždět stanicemi \textit{\$p\_start\_stanice\_id} a \textit{\$p\_cil\_stanice\_id}. U cílové stanice ještě zkontrolujeme zda ve spoji následuje po startovní stanici. Funkce vrací řetězec s nalezenými spoji.
+Funkce najde všechny jízdy s jedním nebo žádným přestupem, které se konají v den zapsaný v proměnné \textit{\$p\_datum} a v čase stejném nebo pozdějším než \textit{\$p\_cas\_od}. Dále jízdy musí projíždět stanicemi \textit{\$p\_start\_stanice\_id} a \textit{\$p\_cil\_stanice\_id}. U cílové stanice ještě zkontrolujeme zda ve spoji následuje po startovní stanici. Funkce vrací dočasnou tabulku s nalezenými jízdami a přestupními stanicemi.
 
 \begin{enumerate}
-    \item Pomocí následujícího dotazu zjistíme kolik spojů projíždí stanicí \textit{\$p\_start\_stanice\_id} odpovídající časové podmínce. Výsledek zapíšeme do proměnné \textit{\$v\_pocet}:
+    \item Pomocí následujícího dotazu zjistíme kolik jízd projíždí stanicí \textit{\$p\_start\_stanice\_id} odpovídající časové podmínce. Výsledek zapíšeme do proměnné \textit{\$v\_pocet}:
     \begin{lstlisting}
-    SELECT COUNT(DISTINCT p.spoj_id)
+    SELECT COUNT(DISTINCT j.jizda_id)
     FROM Prijezd p
         JOIN Spoj s ON p.spoj_id = s.spoj_id
         JOIN Jizda j ON s.spoj_id = j.spoj_id
     WHERE p.stanice_id = $p_start_stanice_id AND 
         p.cas >= $p_cas_od AND 
-        j.datum = $p_datum AND
+        j.datum_start = $p_datum AND
         s.aktivni = 1;
     \end{lstlisting}
     
-    \item V cyklu, který se bude konat \textit{\$v\_pocet}-krát, budeme kontrolovat jestli nám funkce \mbox{\textit{NajdiPrimySpoj()}} najde přímé spoje ze stanice \textit{\$p\_start\_stanice\_id} do stanice \\ \textit{\$p\_cil\_stanice\_id} odpovídající časové podmínce.
+    \item V cyklu, který se bude konat \textit{\$v\_pocet}-krát, budeme kontrolovat jestli nám funkce \mbox{\textit{NajdiPrimouJizdu()}} najde přímé jízdy ze stanice \textit{\$p\_start\_stanice\_id} do stanice \\ \textit{\$p\_cil\_stanice\_id} odpovídající časové podmínce.
     
     \begin{enumerate}
-        \item Pokud ano, na výstup pošleme výsledek. Např.:
-        \begin{lstlisting}
-    Spoj LE 400; Z Ostrava-Svinov; Odjezd 14:12 06.12.19;
-                Do Praha hl.n.; Prijezd 17:23
-    Spoj RJ 106; Z Ostrava-Svinov; Odjezd 15:12 06.12.19;
-                Do Praha hl.n.; Prijezd 18:23
-        \end{lstlisting}
+        \item Pokud ano, na výstup bude vypadat následovně. Např.:
+        \begin{table}[h!]
+            \begin{tabular}{|l|l|l|}
+                \hline
+                prvni\_jizda\_id & prestupni\_stanice\_id & druha\_jizda\_id \\ \hline
+                7 & null & null \\
+                9 & null & null \\
+                \hline
+            \end{tabular}
+            \centering
+        \end{table}
 
-        \item Pokud ne, pokusíme se najít spoj s přestupem. Do proměnné \textit{\$v\_prvni\_spoj} budeme v každé iteraci cyklu ukládat \textit{spoj\_id} \textit{i}-tého řádku z následujícího dotazu. Spoj musí projíždět startovní stanici a splňovat podmínky data a času:
+        \item Pokud ne, pokusíme se najít jízdu s přestupem. Do proměnné \textit{\$v\_prvni\_jizda} budeme v každé iteraci cyklu ukládat \textit{jizda\_id} \textit{i}-tého řádku z následujícího dotazu. Jízda musí projíždět startovní stanici a splňovat podmínky data a času:
         \begin{lstlisting}
-    SELECT DISTINCT p.spoj_id, p.cas
+    SELECT DISTINCT j.jizda_id, p.cas
     FROM Prijezd p
         JOIN Spoj s ON p.spoj_id = s.spoj_id
         JOIN Jizda j ON s.spoj_id = j.spoj_id
     WHERE p.stanice_id = $p_start_stanice_id AND
         p.cas >= $p_cas_od AND 
-        j.datum = $p_datum AND
+        j.datum_start = $p_datum AND
         s.aktivni = 1
     ORDER BY p.cas
         \end{lstlisting}
 
-        \item Následně do proměnné \textit{\$v\_pocet\_stanic} uložíme počet stanic spoje \textit{\$v\_prvni\_spoj}:
+        \item Následně do proměnné \textit{\$v\_pocet\_stanic} uložíme počet stanic spoje \textit{\$v\_prvni\_jizda}:
         \begin{lstlisting}
-    SELECT COUNT(stanice_id) FROM Prijezd
-    WHERE spoj_id = $v_prvni_spoj;
+    SELECT COUNT(stanice_id)
+    FROM Prijezd p JOIN Spoj s ON p.spoj_id = s.spoj_id
+        JOIN Jizda j ON s.spoj_id = j.spoj_id
+    WHERE jizda_id = $v_prvni_jizda
         \end{lstlisting}
 
-        \item Abychom mohli zjistit jestli se můžeme z nějaké stanice na spoji \textit{\$v\_prvni\_spoj} dostat do cílové stanice přestupem na jiný spoj. Budeme ve vnořeném cyklu, který se bude provádět \textit{\$v\_pocet\_stanic}-krát v každé iteraci ukládat hodnotu \textit{stanice\_id} \textit{j}-tého řádku do proměnné \textit{\$v\_prestupni\_stanice} pomocí dotazu:
+        \item Abychom mohli zjistit jestli se můžeme z nějaké stanice na jízdě \textit{\$v\_prvni\_jizda} dostat do cílové stanice přestupem na jinou jízdu. Budeme ve vnořeném cyklu, který se bude provádět \textit{\$v\_pocet\_stanic}-krát v každé iteraci ukládat hodnotu \mbox{\textit{stanice\_id}~\textit{j}-tého} řádku do proměnné \textit{\$v\_prestupni\_stanice} pomocí dotazu:
         \begin{lstlisting}
-        SELECT stanice_id, cas FROM Prijezd
-        WHERE spoj_id = v_prvni_spoj
-        ORDER BY cas
+    SELECT stanice_id, cas
+    FROM Prijezd p JOIN Spoj s ON p.spoj_id = s.spoj_id
+        JOIN Jizda j ON s.spoj_id = j.spoj_id
+    WHERE jizda_id = $v_prvni_jizda
+    ORDER BY cas
         \end{lstlisting}
 
         \begin{enumerate}
-            \item Pokud funkce \textit{NajdiPrimySpoj()} najde přímý spoj z \textit{\$v\_prestupni\_stanice} do \textit{\$p\_cil\_stanice\_id}, pošleme na výstup oba navazující spoje. Např.:
-            \begin{lstlisting}
-    Spoj LE 900; Bohumin - Odjezd 06.12.20 14:12; Hranice na Morave - Prijezd 14:30; Prestup na spoj RJ 800; Odjezd - 14:45; Zabreh na Morave Prijezd 15:05
-    Spoj LE 901; Bohumin - Odjezd 06.12.20 15:12; Hranice na Morave - Prijezd 15:30; Prestup na spoj RJ 802; Odjezd - 15:45; Zabreh na Morave Prijezd 16:05
-            \end{lstlisting}
+            \item Pokud funkce \textit{NajdiPrimouJizdu()} najde přímou jízdu z \textit{\$v\_prestupni\_stanice} do \textit{\$p\_cil\_stanice\_id}, pošleme na výstup obě navazující jízdy. Např.:
+            \begin{table}[h!]
+                \begin{tabular}{|l|l|l|}
+                    \hline
+                    prvni\_jizda\_id & prestupni\_stanice\_id & druha\_jizda\_id \\ \hline
+                    1 & 5 & 2 \\
+                    4 & 5 & 6 \\
+                    \hline
+                \end{tabular}
+                \centering
+            \end{table}
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
@@ -570,11 +585,15 @@ Funkce zkontroluje, zda zbývají volná místa ve spoji na který je vázaná j
     WHERE jizda_id = $p_jizda_id AND s.aktivni = 1;
     \end{lstlisting}
 
-    \item Pokud \textit{\$v\_pocet\_jizdenek} $<$ \textit{\$v\_pocet\_mist}, přidáme záznam do tabulky \textit{Jizdenka\_Jizda}:
+    \item Pokud \textit{\$v\_pocet\_jizdenek} $<$ \textit{\$v\_pocet\_mist}, přidáme záznam do tabulky \textit{Jizdenka\_Jizda} a přičteme cenu jízdy do ceny jízdenky:
     \begin{lstlisting}
     INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi)
     VALUES ($p_jizdenka_id, $p_jizda_id, $p_stanice_id_start, $p_stanice_id_cil, 
         (SELECT COALESCE(MAX(poradi), 0) FROM jizdenka_jizda WHERE jizdenka_id = p_jizdenka_id) + 1);
+    
+    UPDATE Jizdenka 
+    SET cena = cena + SpocitejCenuJizdy($p_jizda_id, $p_stanice_id_start, $p_stanice_id_cil) 
+    WHERE jizdenka_id = $p_jizdenka_id;
     \end{lstlisting}
 
     \item Pokud nebude volný dostatečný počet míst procedura vypíše: „Spoj je vyprodaný“ a bude ukončena.

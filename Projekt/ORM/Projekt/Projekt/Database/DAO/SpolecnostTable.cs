@@ -29,7 +29,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Spolecnost> spolecnosti = Read(reader, true);
+            Collection<Spolecnost> spolecnosti = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -58,7 +58,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@id", id);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Spolecnost> spolecnosti = Read(reader, true);
+            Collection<Spolecnost> spolecnosti = Read(reader);
             Spolecnost spolecnost = null;
             if (spolecnosti.Count == 1)
             {
@@ -91,7 +91,7 @@ namespace Projekt.ORM.DAO
             SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Spolecnost> spolecnosti = Read(reader, false);
+            Collection<Spolecnost> spolecnosti = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -102,7 +102,7 @@ namespace Projekt.ORM.DAO
             return spolecnosti;
         }
 
-        private static Collection<Spolecnost> Read(SqlDataReader reader, bool complete = false)
+        private static Collection<Spolecnost> Read(SqlDataReader reader)
         {
             Collection<Spolecnost> spolecnosti = new Collection<Spolecnost>();
 

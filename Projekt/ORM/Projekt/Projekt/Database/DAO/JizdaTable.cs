@@ -99,7 +99,7 @@ namespace Projekt.ORM.DAO
         }
 
         // 2.4. Vyhledání jízdy.
-        public static Collection<int> NajitJizdu(int start_stanice_id, int cil_stanice_id, DateTime datum, DateTime cas_od, Database pDb = null)    // TODO Netrivialni
+        public static Collection<int?[]> NajitJizdu(int start_stanice_id, int cil_stanice_id, DateTime datum, DateTime cas_od, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -119,14 +119,25 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@cas_od", cas_od);
             SqlDataReader reader = db.Select(command);
 
-            Collection<int> data = new Collection<int>();
+            Collection<int?[]> data = new Collection<int?[]>();
 
             while (reader.Read())
             {
                 int i = -1;
-                data.Add(reader.GetInt32(++i));
-                data.Add(reader.GetInt32(++i));
-                data.Add(reader.GetInt32(++i));
+                int?[] jizdy = new int?[3];
+                jizdy[++i] = reader.GetInt32(i);
+                if (!reader.IsDBNull(++i))
+                {
+                    jizdy[i] = reader.GetInt32(i);
+                    jizdy[++i] = reader.GetInt32(i);
+                }
+                else
+                {
+                    jizdy[i] = null;
+                    jizdy[++i] = null;
+                }
+
+                data.Add(jizdy);
             }
             reader.Close();
 
@@ -193,7 +204,9 @@ namespace Projekt.ORM.DAO
             SqlDataReader reader = db.Select(command);
 
             reader.Read();
-            return reader.GetInt32(0);
+            int ret = reader.GetInt32(0);
+            reader.Close();
+            return ret;
         }
 
         // Select all records.

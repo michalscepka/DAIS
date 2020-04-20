@@ -26,7 +26,7 @@ namespace Projekt.ORM.DAO
             SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
-            Collection<HistorieCeny> historie_cen = Read(reader, false);
+            Collection<HistorieCeny> historie_cen = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -37,7 +37,7 @@ namespace Projekt.ORM.DAO
             return historie_cen;
         }
 
-        private static Collection<HistorieCeny> Read(SqlDataReader reader, bool complete)
+        private static Collection<HistorieCeny> Read(SqlDataReader reader)
         {
             Collection<HistorieCeny> historie_cen = new Collection<HistorieCeny>();
 

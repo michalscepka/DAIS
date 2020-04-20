@@ -29,7 +29,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Mesto> mesta = Read(reader, true);
+            Collection<Mesto> mesta = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -58,7 +58,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@id", id);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Mesto> users = Read(reader, true);
+            Collection<Mesto> users = Read(reader);
             Mesto user = null;
             if (users.Count == 1)
             {
@@ -91,7 +91,7 @@ namespace Projekt.ORM.DAO
             SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Mesto> mesta = Read(reader, false);
+            Collection<Mesto> mesta = Read(reader);
             reader.Close();
 
             if (pDb == null)
@@ -102,7 +102,7 @@ namespace Projekt.ORM.DAO
             return mesta;
         }
 
-        private static Collection<Mesto> Read(SqlDataReader reader, bool complete)
+        private static Collection<Mesto> Read(SqlDataReader reader)
         {
             Collection<Mesto> mesta = new Collection<Mesto>();
 
