@@ -7,9 +7,10 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Stanice";
 
-        public static string SQL_SELECT_ALL = "SELECT * FROM Stanice";
-        public static string SQL_SELECT_BY_NAME = "SELECT * FROM stanice WHERE nazev LIKE \'%\' + @input + \'%\'";
-        public static string SQL_SELECT_ID = "SELECT * FROM stanice WHERE stanice_id = @id";
+        public static string SQL_SELECT_BY_NAME = "SELECT s.stanice_id, s.nazev, s.mesto_id, m.nazev, m.kraj " +
+            "FROM Stanice s JOIN Mesto m ON s.mesto_id = m.mesto_id WHERE s.nazev LIKE \'%\' + @input + \'%\'";
+        public static string SQL_SELECT_ID = "SELECT s.stanice_id, s.nazev, s.mesto_id, m.nazev, m.kraj " +
+            "FROM Stanice s JOIN Mesto m ON s.mesto_id = m.mesto_id WHERE stanice_id = @id";
 
         // 6.1. Seznam stanic.
         public static Collection<Stanice> SelectSeznam(string input, Database pDb = null)
@@ -74,34 +75,6 @@ namespace Projekt.ORM.DAO
             return stanice;
         }
 
-        // Select all records.
-        public static Collection<Stanice> SelectAll(Database pDb = null)
-        {
-            Database db;
-            if (pDb == null)
-            {
-                db = new Database();
-                db.Connect();
-            }
-            else
-            {
-                db = pDb;
-            }
-
-            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
-            SqlDataReader reader = db.Select(command);
-
-            Collection<Stanice> stanice_arr = Read(reader);
-            reader.Close();
-
-            if (pDb == null)
-            {
-                db.Close();
-            }
-
-            return stanice_arr;
-        }
-
         private static Collection<Stanice> Read(SqlDataReader reader)
         {
             Collection<Stanice> stanice_arr = new Collection<Stanice>();
@@ -113,9 +86,15 @@ namespace Projekt.ORM.DAO
                 {
                     Id = reader.GetInt32(++i),
                     Nazev = reader.GetString(++i),
-                    MestoId = reader.GetInt32(++i)
-                };
+                    MestoId = reader.GetInt32(++i),
 
+                    Mesto = new Mesto
+                    {
+                        Id = reader.GetInt32(i),
+                        Nazev = reader.GetString(++i),
+                        Kraj = reader.GetString(++i)
+                    }
+                };
                 stanice_arr.Add(stanice);
             }
             return stanice_arr;

@@ -8,14 +8,15 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Prijezd";
 
-        public static string SQL_SELECT_ALL = "SELECT stanice_id, spoj_id, CAST(cas AS DATETIME), poradi, vzdalenost FROM Prijezd";
-        public static string SQL_SELECT_ID = "SELECT stanice_id, spoj_id, CAST(cas AS DATETIME), poradi, vzdalenost FROM Prijezd " +
-            "WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
-        public static string SQL_SELECT_BY_ARIBUTES = "EXEC SeznamPrijezdu @stanice, @spoj, @cas, @datum";
         public static string SQL_INSERT = "INSERT INTO Prijezd(stanice_id, spoj_id, cas, poradi, vzdalenost) " +
             "VALUES(@stanice_id, @spoj_id, @cas, @poradi, @vzdalenost)";
-        public static string SQL_DELETE_ID = "DELETE FROM Prijezd WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
         public static string SQL_UPDATE = "UPDATE Prijezd SET cas=@cas, poradi=@poradi, vzdalenost=@vzdalenost WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
+        public static string SQL_DELETE_ID = "DELETE FROM Prijezd WHERE stanice_id=@stanice_id AND spoj_id=@spoj_id";
+        public static string SQL_SELECT_BY_ARIBUTES = "EXEC SeznamPrijezdu @stanice, @spoj, @cas, @datum";
+        public static string SQL_SELECT_ID = "SELECT p.stanice_id, p.spoj_id, CAST(p.cas AS DATETIME), p.poradi, p.vzdalenost, st.stanice_id, st.nazev, st.mesto_id, " +
+            "m.mesto_id, m.nazev, m.kraj, s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, sp.spolecnost_id, s.aktivni, sp.spolecnost_id, sp.nazev, " +
+            "sp.web, sp.email FROM Prijezd p JOIN Stanice st ON p.stanice_id = st.stanice_id JOIN Mesto m ON st.mesto_id = m.mesto_id JOIN Spoj s ON p.spoj_id = s.spoj_id " +
+            "JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id WHERE p.stanice_id=@stanice_id AND p.spoj_id=@spoj_id";
 
         // 5.1. Vytvoření nového příjezdu.
         public static int Insert(Prijezd prijezd, Database pDb = null)
@@ -163,34 +164,6 @@ namespace Projekt.ORM.DAO
             return prijezd;
         }
 
-        // Select all records.
-        public static Collection<Prijezd> SelectAll(Database pDb = null)
-        {
-            Database db;
-            if (pDb == null)
-            {
-                db = new Database();
-                db.Connect();
-            }
-            else
-            {
-                db = pDb;
-            }
-
-            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
-            SqlDataReader reader = db.Select(command);
-
-            Collection<Prijezd> prijezdy = Read(reader);
-            reader.Close();
-
-            if (pDb == null)
-            {
-                db.Close();
-            }
-
-            return prijezdy;
-        }
-
         private static void PrepareCommand(SqlCommand command, Prijezd prijezd)
         {
             command.Parameters.AddWithValue("@stanice_id", prijezd.StaniceId);
@@ -214,6 +187,35 @@ namespace Projekt.ORM.DAO
                     Cas = reader.GetDateTime(++i),
                     Poradi = reader.GetInt32(++i),
                     Vzdalenost = reader.GetInt32(++i)
+                };
+                prijezd.Stanice = new Stanice
+                {
+                    Id = reader.GetInt32(++i),
+                    Nazev = reader.GetString(++i),
+                    MestoId = reader.GetInt32(++i)
+                };
+                prijezd.Stanice.Mesto = new Mesto
+                {
+                    Id = reader.GetInt32(++i),
+                    Nazev = reader.GetString(++i),
+                    Kraj = reader.GetString(++i)
+                };
+                prijezd.Spoj = new Spoj
+                {
+                    Id = reader.GetInt32(++i),
+                    Nazev = reader.GetString(++i),
+                    CenaZaKm = reader.GetInt32(++i),
+                    KapacitaMist = reader.GetInt32(++i),
+                    Pravidelny = reader.GetBoolean(++i),
+                    SpolecnostId = reader.GetInt32(++i),
+                    Aktivni = reader.GetBoolean(++i)
+                };
+                prijezd.Spoj.Spolecnost = new Spolecnost
+                {
+                    Id = reader.GetInt32(++i),
+                    Nazev = reader.GetString(++i),
+                    Web = reader.GetString(++i),
+                    Email = reader.GetString(++i)
                 };
 
                 prijezdy.Add(prijezd);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace Projekt.ORM.DAO
@@ -9,12 +8,12 @@ namespace Projekt.ORM.DAO
     {
         public static string TABLE_NAME = "Jizda";
 
-        public static string SQL_SELECT_ALL = "SELECT * FROM Jizda";
-        public static string SQL_SELECT_ID = "SELECT * FROM Jizda WHERE jizda_id=@id";
-        public static string SQL_FILTER_BY_ARIBUTES = "EXEC NajitJizdu @start_stanice_id, @cil_stanice_id, @datum, @cas_od";
-        public static string SQL_INSERT = "INSERT INTO Jizda VALUES (@datum_start, @datum_cil, @spoj_id)";
-        public static string SQL_DELETE_ID = "DELETE FROM Jizda WHERE jizda_id=@id";
+        public static string SQL_INSERT = "INSERT INTO Jizda (datum_start, datum_cil, spoj_id) VALUES (@datum_start, @datum_cil, @spoj_id)";
         public static string SQL_UPDATE = "EXEC AktualizovatJizdu @id, @novy_datum_start, @novy_datum_cil, @novy_spoj_id";
+        public static string SQL_DELETE_ID = "DELETE FROM Jizda WHERE jizda_id=@id";
+        public static string SQL_FILTER_BY_ARIBUTES = "EXEC NajitJizdu @start_stanice_id, @cil_stanice_id, @datum, @cas_od";
+        public static string SQL_SELECT_ID = "SELECT j.jizda_id, j.datum_start, j.datum_cil, j.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email " +
+            "FROM Jizda j JOIN Spoj s ON j.spoj_id = s.spoj_id JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id WHERE jizda_id=@id";
         public static string SQL_SPOCITEJ_CENU = "SELECT dbo.SpocitejCenuJizdy(@jizda_id, @stanice_id_start, @stanice_id_cil) AS cena";
 
         // 2.1. Vytvoření nové jízdy.
@@ -206,35 +205,13 @@ namespace Projekt.ORM.DAO
             reader.Read();
             int ret = reader.GetInt32(0);
             reader.Close();
-            return ret;
-        }
-
-        // Select all records.
-        public static Collection<Jizda> SelectAll(Database pDb = null)
-        {
-            Database db;
-            if (pDb == null)
-            {
-                db = new Database();
-                db.Connect();
-            }
-            else
-            {
-                db = pDb;
-            }
-
-            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
-            SqlDataReader reader = db.Select(command);
-
-            Collection<Jizda> jizdy = Read(reader);
-            reader.Close();
 
             if (pDb == null)
             {
                 db.Close();
             }
 
-            return jizdy;
+            return ret;
         }
 
         private static void PrepareCommand(SqlCommand command, Jizda jizda)
@@ -258,6 +235,23 @@ namespace Projekt.ORM.DAO
                     DatumStart = reader.GetDateTime(++i),
                     DatumCil = reader.GetDateTime(++i),
                     SpojId = reader.GetInt32(++i)
+                };
+                jizda.Spoj = new Spoj
+                {
+                    Id = reader.GetInt32(i),
+                    Nazev = reader.GetString(++i),
+                    CenaZaKm = reader.GetInt32(++i),
+                    KapacitaMist = reader.GetInt32(++i),
+                    Pravidelny = reader.GetBoolean(++i),
+                    Aktivni = reader.GetBoolean(++i),
+                    SpolecnostId = reader.GetInt32(++i)
+                };
+                jizda.Spoj.Spolecnost = new Spolecnost
+                {
+                    Id = reader.GetInt32(i),
+                    Nazev = reader.GetString(++i),
+                    Web = reader.GetString(++i),
+                    Email = reader.GetString(++i)
                 };
 
                 jizdy.Add(jizda);

@@ -1,12 +1,9 @@
 
 --------------------------------------------------------------------------------------------
--- NETRIVIALNI
---------------------------------------------------------------------------------------------
 -- 2.2 Aktualizovani jizdy
 --------------------------------------------------------------------------------------------
 
 CREATE OR ALTER PROCEDURE AktualizovatJizdu(
-	-- upravit v analyze
     @p_jizda_id INTEGER,
     @p_novy_datum_start DATE,
 	@p_novy_datum_cil DATE,
@@ -38,7 +35,6 @@ GO
 -- 2.4 Vyhledani jizdy
 --------------------------------------------------------------------------------------------
 
--- upravit v analyze
 CREATE OR ALTER PROCEDURE NajitJizdu(
     @p_start_stanice_id INTEGER,
     @p_cil_stanice_id INTEGER,
@@ -54,6 +50,7 @@ BEGIN
     DECLARE @v_pocet_stanic INTEGER;
     DECLARE @v_j INTEGER = 0;
     DECLARE @v_prestupni_stanice INTEGER;
+	DECLARE @pocet INTEGER = 0;
 
 	CREATE TABLE #tempJizdy (
 	prvni_jizda_id INTEGER,
@@ -70,17 +67,19 @@ BEGIN
         s.aktivni = 1;
 	--PRINT('@v_pocet: ' + CAST(@v_pocet AS VARCHAR));
 
-    WHILE @v_i < @v_pocet BEGIN
-
+    WHILE @v_i < @v_pocet
+	BEGIN
 		SET @v_prvni_jizda = NULL;
 		EXEC NajdiPrimouJizdu @p_start_stanice_id, @p_cil_stanice_id, @p_datum, @p_cas_od, @v_i, @v_prvni_jizda OUT;
-		--PRINT(CAST(@v_prvni_spoj AS VARCHAR));
+		--PRINT(CAST(@v_prvni_jizda AS VARCHAR));
 		
-		IF @v_prvni_jizda IS NOT NULL BEGIN
+		IF @v_prvni_jizda IS NOT NULL
+		BEGIN
 			--SET @v_tmp = @v_tmp + 'Jizda: ' + CAST(@v_prvni_jizda AS VARCHAR) + CHAR(13) + CHAR(10);
-			INSERT INTO #tempJizdy(druha_jizda_id) VALUES (@v_prvni_jizda);
+			INSERT INTO #tempJizdy(prvni_jizda_id) VALUES (@v_prvni_jizda);
 		END
-		ELSE BEGIN
+		ELSE
+		BEGIN
 			SELECT @v_prvni_jizda = jizda_id
 			FROM (
 				SELECT DISTINCT j.jizda_id, p.cas
@@ -102,33 +101,34 @@ BEGIN
 				JOIN Jizda j ON s.spoj_id = j.spoj_id
 			WHERE jizda_id = @v_prvni_jizda
 			--PRINT('@v_pocet_stanic: ' + CAST(@v_pocet_stanic AS VARCHAR));
-		END
 
-		SET @v_j = 0;
-		WHILE @v_j < @v_pocet_stanic BEGIN
+			SET @v_j = 0;
+			WHILE @v_j < @v_pocet_stanic
+			BEGIN
+				SELECT @v_prestupni_stanice = stanice_id
+				FROM (
+					SELECT stanice_id, cas
+					FROM Prijezd p JOIN Spoj s ON p.spoj_id = s.spoj_id
+						JOIN Jizda j ON s.spoj_id = j.spoj_id
+					WHERE jizda_id = @v_prvni_jizda
+					ORDER BY cas
+					OFFSET @v_j ROWS
+					FETCH NEXT 1 ROWS ONLY
+				) prestupni_stanice
+				--PRINT('@v_prestupni_stanice: ' + CAST(@v_prestupni_stanice AS VARCHAR));
 
-            SELECT @v_prestupni_stanice = stanice_id
-            FROM (
-                SELECT stanice_id, cas
-                FROM Prijezd p JOIN Spoj s ON p.spoj_id = s.spoj_id
-					JOIN Jizda j ON s.spoj_id = j.spoj_id
-				WHERE jizda_id = @v_prvni_jizda
-                ORDER BY cas
-				OFFSET @v_j ROWS
-				FETCH NEXT 1 ROWS ONLY
-            ) prestupni_stanice
-            --PRINT('@v_prestupni_stanice: ' + CAST(@v_prestupni_stanice AS VARCHAR));
+				SET @v_druha_jizda = NULL;
+				EXEC NajdiPrimouJizdu @v_prestupni_stanice, @p_cil_stanice_id, @p_datum, @p_cas_od, @v_i, @v_druha_jizda OUT;
+				--PRINT('mozny druhy spoj: ' + CAST(@v_druha_jizda AS VARCHAR));
 
-			SET @v_druha_jizda = NULL;
-			EXEC NajdiPrimouJizdu @v_prestupni_stanice, @p_cil_stanice_id, @p_datum, @p_cas_od, @v_i, @v_druha_jizda OUT;
-			--PRINT('mozny druhy spoj: ' + CAST(@v_druha_jizda AS VARCHAR));
-
-            IF @v_druha_jizda IS NOT NULL BEGIN
-                /*SET @v_tmp = @v_tmp + 'Jizda: ' + CAST(@v_prvni_jizda AS VARCHAR) + '; prestupni stanice: ' + CAST(@v_prestupni_stanice AS VARCHAR) + 
-					'; na jizdu: ' + CAST(@v_druha_jizda AS VARCHAR) + CHAR(13) + CHAR(10);*/
-				INSERT INTO #tempJizdy(prvni_jizda_id, prestupni_stanice_id, druha_jizda_id) VALUES (@v_prvni_jizda, @v_prestupni_stanice, @v_druha_jizda);
+				IF @v_druha_jizda IS NOT NULL
+				BEGIN
+					/*SET @v_tmp = @v_tmp + 'Jizda: ' + CAST(@v_prvni_jizda AS VARCHAR) + '; prestupni stanice: ' + CAST(@v_prestupni_stanice AS VARCHAR) + 
+						'; na jizdu: ' + CAST(@v_druha_jizda AS VARCHAR) + CHAR(13) + CHAR(10);*/
+					INSERT INTO #tempJizdy(prvni_jizda_id, prestupni_stanice_id, druha_jizda_id) VALUES (@v_prvni_jizda, @v_prestupni_stanice, @v_druha_jizda);
+				END
+				SET @v_j = @v_j + 1;
 			END
-			SET @v_j = @v_j + 1;
 		END
 		SET @v_i = @v_i + 1;
 	END
@@ -202,7 +202,6 @@ BEGIN
 			VALUES (@p_jizdenka_id, @p_jizda_id, @p_stanice_id_start, @p_stanice_id_cil, 
 				(SELECT COALESCE(MAX(poradi), 0) FROM jizdenka_jizda WHERE jizdenka_id = @p_jizdenka_id) + 1);
 		
-		-- upravit v analyze
 		UPDATE Jizdenka SET cena = cena + dbo.SpocitejCenuJizdy(@p_jizda_id, @p_stanice_id_start, @p_stanice_id_cil) WHERE jizdenka_id = @p_jizdenka_id;
 	END
 	ELSE
@@ -252,10 +251,7 @@ GO
 
 --------------------------------------------------------------------------------------------
 -- POMOCNE FUNKCE
---------------------------------------------------------------------------------------------
 -- NajdiPrimouJizdu()
---------------------------------------------------------------------------------------------
-
 CREATE OR ALTER PROCEDURE NajdiPrimouJizdu(
     @p_start_stanice_id INTEGER,
     @p_cil_stanice_id INTEGER,
@@ -288,10 +284,7 @@ GO
 
 --------------------------------------------------------------------------------------------
 -- ZBYTEK
---------------------------------------------------------------------------------------------
 -- 5.4. Seznam prijezdu
---------------------------------------------------------------------------------------------
-
 CREATE OR ALTER PROCEDURE SeznamPrijezdu(
 	@p_stanice VARCHAR(30),
 	@p_spoj VARCHAR(20),
@@ -299,12 +292,27 @@ CREATE OR ALTER PROCEDURE SeznamPrijezdu(
 	@p_datum DATETIME)
 AS
 BEGIN
-	SELECT p.stanice_id, p.spoj_id, CAST(p.cas AS DATETIME), p.poradi, p.vzdalenost, st.nazev, s.nazev, j.datum_start, j.datum_cil
+	SELECT p.stanice_id, p.spoj_id, CAST(p.cas AS DATETIME), p.poradi, p.vzdalenost, st.stanice_id, st.nazev, st.mesto_id, 
+		m.mesto_id, m.nazev, m.kraj, s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny,
+		sp.spolecnost_id, s.aktivni, sp.spolecnost_id, sp.nazev, sp.web, sp.email
 	FROM Prijezd p
 		JOIN Stanice st ON p.stanice_id = st.stanice_id
+		JOIN Mesto m ON st.mesto_id = m.mesto_id
 		JOIN Spoj s ON p.spoj_id = s.spoj_id
+		JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id
 		JOIN Jizda j ON s.spoj_id = j.spoj_id
 	WHERE st.nazev LIKE '%' + @p_stanice + '%' AND s.nazev LIKE '%' + @p_spoj + '%' AND p.cas >= @p_cas AND j.datum_start >= @p_datum
+END
+
+GO
+
+-- 4.2. Aktualizovani spoje - zapsani puvodni ceny do tabulky Historie_ceny
+CREATE OR ALTER TRIGGER trigHistorieCeny
+ON Spoj
+FOR INSERT, UPDATE
+AS
+BEGIN
+	INSERT INTO Historie_ceny(cena, datum, spoj_id) VALUES((SELECT cena_za_km FROM inserted), GETDATE(), (SELECT spoj_id FROM inserted));
 END
 
 GO

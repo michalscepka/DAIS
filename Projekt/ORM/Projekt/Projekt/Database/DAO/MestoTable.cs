@@ -7,9 +7,8 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Mesto";
 
-        public static string SQL_SELECT_ALL = "SELECT * FROM Mesto";
-        public static string SQL_SELECT_BY_NAME = "SELECT * FROM Mesto WHERE nazev LIKE \'%\' + @input + \'%\'";
-        public static string SQL_SELECT_ID = "SELECT * FROM Mesto WHERE mesto_id = @id";
+        public static string SQL_SELECT_BY_NAME = "SELECT mesto_id, nazev, kraj FROM Mesto WHERE nazev LIKE \'%\' + @input + \'%\'";
+        public static string SQL_SELECT_ID = "SELECT mesto_id, nazev, kraj FROM Mesto WHERE mesto_id = @id";
 
         // 7.1. Seznam měst.
         public static Collection<Mesto> SelectSeznam(string input, Database pDb = null)
@@ -72,34 +71,6 @@ namespace Projekt.ORM.DAO
             }
             
             return user;
-        }
-
-        // Select all records.
-        public static Collection<Mesto> Select(Database pDb = null)
-        {
-            Database db;
-            if (pDb == null)
-            {
-                db = new Database();
-                db.Connect();
-            }
-            else
-            {
-                db = pDb;
-            }
-
-            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
-            SqlDataReader reader = db.Select(command);
-
-            Collection<Mesto> mesta = Read(reader);
-            reader.Close();
-
-            if (pDb == null)
-            {
-                db.Close();
-            }
-
-            return mesta;
         }
 
         private static Collection<Mesto> Read(SqlDataReader reader)

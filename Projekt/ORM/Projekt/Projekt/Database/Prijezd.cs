@@ -14,8 +14,8 @@ namespace Projekt.ORM
 
 		public override string ToString()
 		{
-			return string.Format("Prijezd StaniceId: {0}, SpojId: {1}, Cas: {2}, Poradi: {3}, Vzdalenost: {4}", 
-				StaniceId, SpojId, Cas.ToString("HH:mm:ss.f"), Poradi, Vzdalenost);
+			return string.Format("Prijezd StaniceId: {0}, SpojId: {1}, Cas: {2}, Poradi: {3}, Vzdalenost: {4}; {5}; {6}", 
+				StaniceId, SpojId, Cas.ToString("HH:mm:ss.f"), Poradi, Vzdalenost, Stanice.ToString(), Spoj.ToString());
 		}
 	}
 }

@@ -45,9 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\DAO\Database.cs" />
-    <Compile Include="Database\DAO\HistorieCenyTable.cs" />
     <Compile Include="Database\DAO\JizdaTable.cs" />
-    <Compile Include="Database\DAO\JizdenkaJizdaTable.cs" />
     <Compile Include="Database\DAO\JizdenkaTable.cs" />
     <Compile Include="Database\DAO\MestoTable.cs" />
     <Compile Include="Database\DAO\PrijezdTable.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.ObjectModel;
 
 namespace Projekt.ORM
 {
@@ -6,11 +7,12 @@ namespace Projekt.ORM
 	{
 		public int Id { get; set; }
 		public int UzivatelId { get; set; }
+		public Uzivatel Uzivatel { get; set; }
 		public int Cena { get; set; }
-
+		
 		public override string ToString()
 		{
-			return string.Format("Jizdenka {0}: Uzivatel: {1}, Cena: {2}", Id, UzivatelId, Cena);
+			return string.Format("Jizdenka {0}: Cena: {1}; {2}", Id, Cena, Uzivatel.ToString());
 		}
 	}
 }

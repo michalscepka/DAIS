@@ -7,9 +7,8 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Spolecnost";
 
-        public static string SQL_SELECT_ALL = "SELECT * FROM Spolecnost";
-        public static string SQL_SELECT_NAME = "SELECT * FROM Spolecnost WHERE nazev LIKE \'%\' + @input + \'%\'";
-        public static string SQL_SELECT_ID = "SELECT * FROM Spolecnost WHERE spolecnost_id = @id";
+        public static string SQL_SELECT_NAME = "SELECT spolecnost_id, nazev, web, email FROM Spolecnost WHERE nazev LIKE \'%\' + @input + \'%\'";
+        public static string SQL_SELECT_ID = "SELECT spolecnost_id, nazev, web, email FROM Spolecnost WHERE spolecnost_id = @id";
 
         // 8.1. Seznam společností.
         public static Collection<Spolecnost> SelectSeznam(string input, Database pDb = null)
@@ -72,34 +71,6 @@ namespace Projekt.ORM.DAO
             }
 
             return spolecnost;
-        }
-
-        // Select all records.
-        public static Collection<Spolecnost> SelectAll(Database pDb = null)
-        {
-            Database db;
-            if (pDb == null)
-            {
-                db = new Database();
-                db.Connect();
-            }
-            else
-            {
-                db = pDb;
-            }
-
-            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
-            SqlDataReader reader = db.Select(command);
-
-            Collection<Spolecnost> spolecnosti = Read(reader);
-            reader.Close();
-
-            if (pDb == null)
-            {
-                db.Close();
-            }
-
-            return spolecnosti;
         }
 
         private static Collection<Spolecnost> Read(SqlDataReader reader)

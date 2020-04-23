@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace Projekt.ORM
 {
 	public class Mesto

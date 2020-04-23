@@ -15,7 +15,7 @@ INSERT INTO mesto (nazev, kraj) VALUES ('Plana', 'Plzensky');
 INSERT INTO mesto (nazev, kraj) VALUES ('Ceska Trebova', 'Pardubicky');
 INSERT INTO mesto (nazev, kraj) VALUES ('Havirov', 'Moravskoslezsky');
 
-SELECT * FROM mesto;
+--SELECT * FROM mesto;
 
 INSERT INTO stanice (nazev, mesto_id) VALUES ('Bohumin', 1);
 INSERT INTO stanice (nazev, mesto_id) VALUES ('Ostrava hl.n.', 2);
@@ -38,13 +38,13 @@ INSERT INTO stanice (nazev, mesto_id) VALUES ('Plana u Mar.Lazni', 14);
 INSERT INTO stanice (nazev, mesto_id) VALUES ('Ceska Trebova', 15);
 INSERT INTO stanice (nazev, mesto_id) VALUES ('Havirov', 16);
 
-SELECT * FROM stanice;
+--SELECT * FROM stanice;
 
 INSERT INTO spolecnost (nazev, web, email) VALUES ('Ceske Drahy', 'www.cd.cz', 'info@cd.cz');
 INSERT INTO spolecnost (nazev, web, email) VALUES ('RegioJet', 'www.regiojet.cz', 'info@regiojet.cz');
 INSERT INTO spolecnost (nazev, web, email) VALUES ('LeoExpress', 'www.leoexpress.com', 'info@le.cz');
 
-SELECT * FROM spolecnost;
+--SELECT * FROM spolecnost;
 
 INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
     VALUES ('honza1', 'Jan', 'Novak', 'jannovak@gmail.com', 'zakaznik', '2019-12-3 12:30:50', 1);
@@ -67,7 +67,7 @@ INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, akt
 INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
     VALUES ('pepa', 'Pepa', 'Jan', 'pepajan@gmail.com', 'zakaznik', NULL, 1);
 
-SELECT * FROM uzivatel;
+--SELECT * FROM uzivatel;
 
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 400', 3, 200, 1, 3, 1);
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 106', 2, 150, 1, 2, 1);
@@ -83,7 +83,7 @@ INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, a
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 802', 2, 200, 1, 2, 1);
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 803', 2, 200, 1, 2, 1);
 ---------------------------------------
-SELECT * FROM spoj;
+--SELECT * FROM spoj;
 
 ---------- testovaci prijezdy ------------
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (1, 6, '14:00', 1, 0);
@@ -183,7 +183,7 @@ INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (3, 5,
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (2, 5, '19:35', 12, 356);
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (1, 5, '19:49', 13, 364);
 
-SELECT * FROM prijezd;
+--SELECT * FROM prijezd;
 
 INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-03-27', '2020-03-27', 1);
 INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-03-27', '2020-03-27', 2);
@@ -207,7 +207,7 @@ INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-03-30', '2020-
 INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-03-30', '2020-03-30', 10);
 INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-03-30', '2020-03-30', 11);
 ---------------------------------------
-SELECT * FROM jizda;
+--SELECT * FROM jizda;
 
 INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (10, '2019-12-01', 1);
 INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (9, '2019-12-01', 2);
@@ -217,7 +217,7 @@ INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (5, '2019-12-04', 5);
 INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (7, '2019-12-02', 1);
 INSERT INTO historie_ceny(cena, datum, spoj_id) VALUES (1, '2019-12-01', 2);
 
-SELECT * FROM historie_ceny;
+--SELECT * FROM historie_ceny;
 
 INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
 INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
@@ -237,7 +237,7 @@ INSERT INTO jizdenka (uzivatel_id, cena) VALUES (5, 0);
 INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
 INSERT INTO jizdenka (uzivatel_id, cena) VALUES (2, 0);
 
-SELECT * FROM jizdenka;
+--SELECT * FROM jizdenka;
 
 INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi) VALUES (1, 1, 3, 13, 1);
 INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi) VALUES (2, 2, 3, 13, 1);
@@ -260,4 +260,4 @@ INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_c
 INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi) VALUES (16, 1, 1, 5, 1);
 INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi) VALUES (16, 2, 5, 8, 2);
 
-SELECT * FROM jizdenka_jizda;
+--SELECT * FROM jizdenka_jizda;

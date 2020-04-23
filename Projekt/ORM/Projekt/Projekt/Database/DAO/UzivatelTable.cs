@@ -8,13 +8,14 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Uzivatel";
 
-        public static string SQL_SELECT_ALL = "SELECT * FROM Uzivatel";
-        public static string SQL_SELECT_ID = "SELECT * FROM Uzivatel WHERE uzivatel_id = @id";
-        public static string SQL_FILTER_BY_NAME = "SELECT * FROM Uzivatel WHERE jmeno LIKE \'%\' + @input + \'%\' OR prijmeni LIKE \'%\' + @input + \'%\';";
-        public static string SQL_INSERT = "INSERT INTO Uzivatel VALUES (@login, @jmeno, @prijmeni, @email, @typ, @posledni_navsteva, @aktivni)";
-        public static string SQL_DELETE_ID = "UPDATE Uzivatel SET aktivni = 0 WHERE uzivatel_id = @id";
+        public static string SQL_INSERT = "INSERT INTO Uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni) " +
+            "VALUES (@login, @jmeno, @prijmeni, @email, @typ, @posledni_navsteva, @aktivni)";
         public static string SQL_UPDATE = "UPDATE Uzivatel SET login=@login, jmeno=@jmeno, prijmeni=@prijmeni," +
             "email=@email, typ=@typ, posledni_navsteva=@posledni_navsteva, aktivni=@aktivni WHERE uzivatel_id=@id";
+        public static string SQL_DELETE_ID = "UPDATE Uzivatel SET aktivni = 0 WHERE uzivatel_id = @id";
+        public static string SQL_FILTER_BY_NAME = "SELECT uzivatel_id, login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni " +
+            "FROM Uzivatel WHERE jmeno LIKE \'%\' + @input + \'%\' OR prijmeni LIKE \'%\' + @input + \'%\';";
+        public static string SQL_SELECT_ID = "SELECT uzivatel_id, login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni FROM Uzivatel WHERE uzivatel_id = @id";
 
         // 1.1. Zaregistrování nového uživatele.
         public static int Insert(Uzivatel uzivatel, Database pDb = null)
@@ -124,7 +125,7 @@ namespace Projekt.ORM.DAO
         }
 
         // 1.5. Detail uživatele.
-        public static Uzivatel SelectDetail(int id, Database pDb = null)  // TODO
+        public static Uzivatel SelectDetail(int id, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -155,34 +156,6 @@ namespace Projekt.ORM.DAO
             }
 
             return user;
-        }
-
-        // Select all records.
-        public static Collection<Uzivatel> SelectAll(Database pDb = null)
-        {
-            Database db;
-            if (pDb == null)
-            {
-                db = new Database();
-                db.Connect();
-            }
-            else
-            {
-                db = pDb;
-            }
-
-            SqlCommand command = db.CreateCommand(SQL_SELECT_ALL);
-            SqlDataReader reader = db.Select(command);
-
-            Collection<Uzivatel> users = Read(reader);
-            reader.Close();
-
-            if (pDb == null)
-            {
-                db.Close();
-            }
-
-            return users;
         }
 
         private static void PrepareCommand(SqlCommand command, Uzivatel uzivatel)
@@ -218,9 +191,6 @@ namespace Projekt.ORM.DAO
                     uzivatel.PosledniNavsteva = reader.GetDateTime(i);
                 }
                 uzivatel.Aktivni = reader.GetBoolean(++i);
-
-
-                //COUNT PYCO / iterovat dokud neprojdu vsechny jizdenky uzivatele
 
                 uzivatele.Add(uzivatel);
             }
