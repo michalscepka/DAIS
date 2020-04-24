@@ -86,6 +86,7 @@ namespace Projekt
 				Prijmeni = "Zamotany",
 				Email = "pepa.zamotany@gmail.com",
 				Typ = "zakaznik",
+				PosledniNavsteva = new DateTime(2020, 4, 24),
 				Aktivni = true
 			};
 
@@ -96,6 +97,7 @@ namespace Projekt
 				Prijmeni = "Maly",
 				Email = "pavel.maly@gmail.com",
 				Typ = "zakaznik",
+				PosledniNavsteva = new DateTime(2020, 4, 25),
 				Aktivni = true
 			};
 
@@ -128,7 +130,7 @@ namespace Projekt
 
 		public void SeznamUzivatelu()
 		{
-			Console.WriteLine("Seznam uzivatelu podle vstupu 'pa':");
+			Console.WriteLine("1.4. Seznam uživatelů - filtrace podle vstupu 'pa':");
 			foreach (Uzivatel item in UzivatelTable.SelectSeznam("pa", db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -136,7 +138,7 @@ namespace Projekt
 
 		public void DetailUzivatele()
 		{
-			Console.WriteLine(string.Format("Detail uzivatele s id 1:\n{0}\n", UzivatelTable.SelectDetail(1, db).ToString()));
+			Console.WriteLine(string.Format("1.5. Detail uživatele - id '3':\n{0}\n", UzivatelTable.SelectDetail(3, db).ToString()));
 		}
 
 
@@ -153,12 +155,14 @@ namespace Projekt
 			Jizda jizda1 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 1 };
 			Jizda jizda2 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 2 };
 			Jizda jizda3 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 3 };
+			Jizda jizda4 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 4 };
+			Jizda jizda5 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 5 };
 
-			Jizda jizda4 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 1 };
-			Jizda jizda5 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 2 };
-			Jizda jizda6 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 3 };
+			Jizda jizda6 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 1 };
+			Jizda jizda7 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 2 };
+			Jizda jizda8 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 3 };
 
-			Jizda jizda7 = new Jizda { DatumStart = new DateTime(2020, 6, 7), DatumCil = new DateTime(2020, 6, 7), SpojId = 1 };
+			Jizda jizda9 = new Jizda { DatumStart = new DateTime(2020, 6, 7), DatumCil = new DateTime(2020, 6, 7), SpojId = 1 };
 
 			JizdaTable.Insert(jizda1, db);
 			JizdaTable.Insert(jizda2, db);
@@ -167,23 +171,25 @@ namespace Projekt
 			JizdaTable.Insert(jizda5, db);
 			JizdaTable.Insert(jizda6, db);
 			JizdaTable.Insert(jizda7, db);
+			JizdaTable.Insert(jizda8, db);
+			JizdaTable.Insert(jizda9, db);
 		}
 
 		public void UpdateJizda()
 		{
-			Console.WriteLine("2.2. Aktualizování jízdy\nJizda pred aktualizaci:\n" + JizdaTable.SelectDetail(7, db));
+			Console.WriteLine("2.2. Aktualizování jízdy:\nJizda pred aktualizaci:\n" + JizdaTable.SelectDetail(9, db));
 
-			Jizda jizda = JizdaTable.SelectDetail(7, db);
+			Jizda jizda = JizdaTable.SelectDetail(9, db);
 			jizda.DatumStart = new DateTime(2999, 9, 9);
 			jizda.DatumCil = new DateTime(2999, 9, 9);
 			JizdaTable.Update(jizda);
 
-			Console.WriteLine("Jizda po aktualizaci:\n" + JizdaTable.SelectDetail(7, db) + '\n');
+			Console.WriteLine("\nJizda po aktualizaci:\n" + JizdaTable.SelectDetail(9, db) + '\n');
 		}
 
 		public void DeleteJizda()
 		{
-			JizdaTable.Delete(7, db);
+			JizdaTable.Delete(9, db);
 		}
 
 		public void VyhledaniJizdy()
@@ -191,14 +197,13 @@ namespace Projekt
 			Console.WriteLine("2.4. Vyhledání jízdy: stanice_id_start=1, stanice_id_cil=8, datum=5.6.2020, cas=13:00");
 
 			foreach(int?[] item in JizdaTable.NajitJizdu(1, 8, new DateTime(2020, 6, 5), new DateTime(1900, 1, 1, 13, 0, 0), db))
-				Console.WriteLine(string.Format("JizdaId: {0}; prestupni staniceId: {1}; na jizduId: {2}", item[0], item[1], item[2]));
-
+				Console.WriteLine(string.Format("JizdaId: '{0}', prestupni staniceId: '{1}', na jizduId: '{2}'", item[0], item[1], item[2]));
 			Console.WriteLine();
 		}
 
 		public void DetailJizdy()
 		{
-			Console.WriteLine(string.Format("2.5. Detail jizdy s id 1:\n{0}\n", JizdaTable.SelectDetail(1, db).ToString()));
+			Console.WriteLine(string.Format("2.5. Detail jizdy - id '1':\n{0}\n", JizdaTable.SelectDetail(1, db).ToString()));
 		}
 
 		public void VypocitatCenuJizdy()
@@ -246,32 +251,22 @@ namespace Projekt
 
 		public void DeleteJizdenka()
 		{
-			Console.WriteLine("3.3. Zrušení jízdenky:\nPred zrusenim jizdenky pro uzivatel_id: '3':");
-			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(3, db))
-				Console.WriteLine(item.ToString());
-			Console.WriteLine();
-
 			JizdenkaTable.Delete(3, db);
-			
-			Console.WriteLine("Po zruseni jizdenky pro uzivatel_id: '3':");
-			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(3, db))
-				Console.WriteLine(item.ToString());
-			Console.WriteLine();
 		}
 
 		public void SeznamJizdenek()
 		{
 			Console.WriteLine("3.4. Seznam jízdenek - podle id uzivatele '1':");
 			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(1, db))
-				Console.WriteLine(item.ToString());
+				Console.WriteLine(item.Info);
 			Console.WriteLine();
 		}
 
 		public void DetailJizdenky()
 		{
-			Console.WriteLine("3.5. Detail jízdenky - s id '1':");
+			Console.WriteLine("3.5. Detail jízdenky - id '1':");
 			foreach (JizdenkaJizda item in JizdenkaTable.SelectDetail(1, db))
-				Console.WriteLine(item.ToString());
+				Console.WriteLine(item.Info);
 			Console.WriteLine();
 		}
 
@@ -324,7 +319,7 @@ namespace Projekt
 
 		public void SeznamSpoju()
 		{
-			Console.WriteLine("Seznam spoju projizdejicich stanici s id 2:");
+			Console.WriteLine("4.4. Seznam spojů - projizdejicich stanici id '2':");
 			foreach (Spoj item in SpojTable.SelectSeznam(2, db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -332,7 +327,7 @@ namespace Projekt
 		
 		public void DetailSpoje()
 		{
-			Console.WriteLine(string.Format("Detail spoje s id 1:\n{0}\n", SpojTable.SelectDetail(1, db).ToString()));
+			Console.WriteLine(string.Format("4.5. Detail spoje - id '2':\n{0}\n", SpojTable.SelectDetail(2, db).ToString()));
 		}
 
 
@@ -346,7 +341,7 @@ namespace Projekt
 		// 5. Evidence příjezdů
 		public void CreatePrijezd()
 		{
-			Prijezd prijezd1 = new Prijezd 
+			Prijezd prijezd1 = new Prijezd
 			{
 				StaniceId = 12,
 				SpojId = 3,
@@ -371,15 +366,15 @@ namespace Projekt
 
 		public void SeznamPrijezdu()
 		{
-			Console.WriteLine("Seznam prijezdu filtrace podle vstupu 'Ostrava-Svinov', 'LE', '14:00', '2020-04-20:");
-			foreach (Prijezd item in PrijezdTable.SelectSeznam("Ostrava-Svinov", "", new DateTime(1900, 1, 1, 14, 0, 0), new DateTime(2020, 4, 20), db))
-				Console.WriteLine(item.ToString());
+			Console.WriteLine("5.4. Seznam příjezdů - filtrace podle vstupu 'Ostrava-Svinov', 'LE', '14:00', '2020-06-05:");
+			foreach (Prijezd item in PrijezdTable.SelectSeznam("Ostrava-Svinov", "", new DateTime(1900, 1, 1, 14, 0, 0), new DateTime(2020, 6, 5), db))
+				Console.WriteLine(item.Info);
 			Console.WriteLine();
 		}
 
 		public void DetailPrijezdu()
 		{
-			Console.WriteLine(PrijezdTable.SelectDetail(2, 1, db));
+			Console.WriteLine(string.Format("5.5. Detail příjezdu - stanice_id '2' a spoj_id '1':\n{0}\n", PrijezdTable.SelectDetail(2, 1, db).Info));
 		}
 
 
@@ -393,7 +388,7 @@ namespace Projekt
 		// 6. Evidence stanic
 		public void SeznamStanic()
 		{
-			Console.WriteLine("Seznam stanic filtrace podle vstupu 'Ost':");
+			Console.WriteLine("6.1. Seznam stanic - filtrace podle vstupu 'Ost':");
 			foreach (Stanice item in StaniceTable.SelectSeznam("Ost", db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -401,7 +396,7 @@ namespace Projekt
 
 		public void DetailStanice()
 		{
-			Console.WriteLine(string.Format("Detail stanice s id 2:\n{0}\n", StaniceTable.SelectDetail(2, db).ToString()));
+			Console.WriteLine(string.Format("6.2. Detail stanice - id '2':\n{0}\n", StaniceTable.SelectDetail(2, db).ToString()));
 		}
 
 
@@ -415,7 +410,7 @@ namespace Projekt
 		// 7. Evidence měst
 		public void SeznamMest()
 		{
-			Console.WriteLine("Seznam mest filtrace podle vstupu 'ha':");
+			Console.WriteLine("7.1.Seznam měst - filtrace podle vstupu 'ha':");
 			foreach (Mesto item in MestoTable.SelectSeznam("ha", db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -423,7 +418,7 @@ namespace Projekt
 
 		public void DetailMesta()
 		{
-			Console.WriteLine(string.Format("Detail mesta s id 1:\n{0}\n", MestoTable.SelectDetail(1, db).ToString()));
+			Console.WriteLine(string.Format("7.2. Detail města - id 1:\n{0}\n", MestoTable.SelectDetail(1, db).ToString()));
 		}
 
 
@@ -437,7 +432,7 @@ namespace Projekt
 		// 8. Evidence společností
 		public void SeznamSpolecnosti()
 		{
-			Console.WriteLine("Seznam spolecnosti podle vstupu 're':");
+			Console.WriteLine("8.1. Seznam společností - podle vstupu 're':");
 			foreach (Spolecnost item in SpolecnostTable.SelectSeznam("re", db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -445,7 +440,7 @@ namespace Projekt
 
 		public void DetailSpolecnosti()
 		{
-			Console.WriteLine(string.Format("Detail spolecnosti s id 1:\n{0}\n", SpolecnostTable.SelectDetail(1, db).ToString()));
+			Console.WriteLine(string.Format("8.2. Detail společnosti - id '1':\n{0}\n", SpolecnostTable.SelectDetail(1, db).ToString()));
 		}
 	}
 }

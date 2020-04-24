@@ -1,5 +1,4 @@
-﻿
-namespace Projekt.ORM
+﻿namespace Projekt.ORM
 {
 	public class Mesto
 	{

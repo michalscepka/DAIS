@@ -12,6 +12,9 @@
 		public Stanice StaniceCil { get; set; }
 		public int Poradi { get; set; }
 
+		public string Info { get { return string.Format("Jizdenka '{0}' uzivatele '{1}'; cena '{2} Kc'; datum '{3}'; spoj '{4}' '{5}'; z '{6}' do '{7}'", 
+			Jizdenka.Id, Jizdenka.Uzivatel.FullName, Jizdenka.Cena, Jizda.DatumStart.ToString("dd.MM.yyyy"), Jizda.Spoj.Nazev, Jizda.Spoj.Spolecnost.Nazev, StaniceStart.Nazev, StaniceCil.Nazev); } }
+
 		public override string ToString()
 		{
 			return string.Format("JizdenkaJizda JizdenkaId: {0}, JizdaId: {1}, StaniceIdStart: {2}, StaniceIdCil: {3}, Poradi: {4}; {5}; {6}; {7}; {8}",

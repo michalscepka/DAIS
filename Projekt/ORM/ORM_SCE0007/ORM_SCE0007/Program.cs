@@ -1,5 +1,4 @@
 ﻿using System;
-using Projekt.ORM;
 using Projekt.ORM.DAO;
 
 namespace Projekt

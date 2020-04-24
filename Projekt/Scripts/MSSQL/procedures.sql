@@ -1,4 +1,3 @@
-
 --------------------------------------------------------------------------------------------
 -- 2.2 Aktualizovani jizdy
 --------------------------------------------------------------------------------------------
@@ -301,7 +300,7 @@ BEGIN
 		JOIN Spoj s ON p.spoj_id = s.spoj_id
 		JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id
 		JOIN Jizda j ON s.spoj_id = j.spoj_id
-	WHERE st.nazev LIKE '%' + @p_stanice + '%' AND s.nazev LIKE '%' + @p_spoj + '%' AND p.cas >= @p_cas AND j.datum_start >= @p_datum
+	WHERE st.nazev LIKE '%' + @p_stanice + '%' AND s.nazev LIKE '%' + @p_spoj + '%' AND p.cas >= @p_cas AND j.datum_start = @p_datum
 END
 
 GO

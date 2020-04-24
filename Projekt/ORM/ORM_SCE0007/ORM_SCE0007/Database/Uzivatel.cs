@@ -18,7 +18,8 @@ namespace Projekt.ORM
 
 		public override string ToString()
 		{
-			return string.Format("Uzivatel {0}: {1}, {2}, {3}, {4}, PosledniNavsteva: {5}, Aktivni: {6}", Id, Login, FullName, Email, Typ, PosledniNavsteva, Aktivni);
+			return string.Format("Uzivatel {0}: {1}, {2}, {3}, {4}, PosledniNavsteva: {5}, Aktivni: {6}", 
+				Id, Login, FullName, Email, Typ, PosledniNavsteva.HasValue ? PosledniNavsteva.Value.ToString("dd.MM.yyyy") : "[N/A]", Aktivni);
 		}
 	}
 }
