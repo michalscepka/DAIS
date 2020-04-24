@@ -2,6 +2,8 @@
 using Projekt.ORM.DAO;
 using System;
 using System.Data.SqlClient;
+using System.IO;
+using System.Text;
 
 namespace Projekt
 {
@@ -14,20 +16,66 @@ namespace Projekt
 			this.db = database;
 		}
 
-		public void CreateTables()
+		private string ReadSqlFile(string path)
 		{
-			SqlCommand command = db.CreateCommand("exec CreateScript");
-			db.ExecuteNonQuery(command);
+			StringBuilder fileString = new StringBuilder();
+
+			try
+			{
+				using (StreamReader sr = new StreamReader(path))
+				{
+					string tmp;
+					while ((tmp = sr.ReadLine()) != null)
+					{
+						fileString.Append(tmp + "\n");
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+
+			return fileString.ToString();
+		}
+
+		public void DbInit()
+		{
+			DirectoryInfo dicDirectoryInfo = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent;
+			string delete_sql = ReadSqlFile(dicDirectoryInfo.FullName + "\\" + "SQLs" + "\\" + "delete.sql");
+			string create_sql = ReadSqlFile(dicDirectoryInfo.FullName + "\\" + "SQLs" + "\\" + "create.sql");
+			string data_sql = ReadSqlFile(dicDirectoryInfo.FullName + "\\" + "SQLs" + "\\" + "data.sql");
+
+			try
+			{
+				SqlCommand command = db.CreateCommand(delete_sql);
+				int status = db.ExecuteNonQuery(command);
+			}
+			catch (Exception) { }
+
+			try
+			{
+				SqlCommand command = db.CreateCommand(create_sql);
+				int status = db.ExecuteNonQuery(command);
+			}
+			catch (Exception) { }
+
+			try
+			{
+				SqlCommand command = db.CreateCommand(data_sql);
+				int status = db.ExecuteNonQuery(command);
+			}
+			catch (Exception) { }
 		}
 
 
 
 
-		
-		
-		
-		
-		
+
+
+
+
+
 		// 1. Evidence uživatelů
 		public void CreateUzivatel()
 		{
@@ -75,7 +123,7 @@ namespace Projekt
 
 		public void DeleteUzivatel()
 		{
-			UzivatelTable.Delete(1, db);
+			UzivatelTable.Delete(3, db);
 		}
 
 		public void SeznamUzivatelu()
@@ -102,14 +150,15 @@ namespace Projekt
 		// 2. Evidence jízd
 		public void CreateJizda()
 		{
-			// TODO pridat vic spoju
 			Jizda jizda1 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 1 };
 			Jizda jizda2 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 2 };
-			Jizda jizda3 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 1 };
-			Jizda jizda4 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 2 };
-			Jizda jizda5 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 3 };
-			Jizda jizda6 = new Jizda { DatumStart = new DateTime(2020, 6, 7), DatumCil = new DateTime(2020, 6, 7), SpojId = 3 };
-			Jizda jizda7 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 4 };
+			Jizda jizda3 = new Jizda { DatumStart = new DateTime(2020, 6, 5), DatumCil = new DateTime(2020, 6, 5), SpojId = 3 };
+
+			Jizda jizda4 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 1 };
+			Jizda jizda5 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 2 };
+			Jizda jizda6 = new Jizda { DatumStart = new DateTime(2020, 6, 6), DatumCil = new DateTime(2020, 6, 6), SpojId = 3 };
+
+			Jizda jizda7 = new Jizda { DatumStart = new DateTime(2020, 6, 7), DatumCil = new DateTime(2020, 6, 7), SpojId = 1 };
 
 			JizdaTable.Insert(jizda1, db);
 			JizdaTable.Insert(jizda2, db);
@@ -122,19 +171,19 @@ namespace Projekt
 
 		public void UpdateJizda()
 		{
-			Console.WriteLine("2.2. Aktualizování jízdy\nJizda pred aktualizaci:\n" + JizdaTable.SelectDetail(5, db));
+			Console.WriteLine("2.2. Aktualizování jízdy\nJizda pred aktualizaci:\n" + JizdaTable.SelectDetail(7, db));
 
-			Jizda jizda = JizdaTable.SelectDetail(5, db);
+			Jizda jizda = JizdaTable.SelectDetail(7, db);
 			jizda.DatumStart = new DateTime(2999, 9, 9);
 			jizda.DatumCil = new DateTime(2999, 9, 9);
 			JizdaTable.Update(jizda);
 
-			Console.WriteLine("Jizda po aktualizaci:\n" + JizdaTable.SelectDetail(5, db) + '\n');
+			Console.WriteLine("Jizda po aktualizaci:\n" + JizdaTable.SelectDetail(7, db) + '\n');
 		}
 
 		public void DeleteJizda()
 		{
-			JizdaTable.Delete(6, db);
+			JizdaTable.Delete(7, db);
 		}
 
 		public void VyhledaniJizdy()
@@ -155,10 +204,10 @@ namespace Projekt
 		public void VypocitatCenuJizdy()
 		{
 			int jizda_id = 1;
-			int stanice_id_start = 2;
-			int stanice_id_cil = 5;
+			int stanice_id_start = 1;
+			int stanice_id_cil = 6;
 			Console.WriteLine(string.Format("2.6. Vypočítání ceny jízdy:\n" +
-				"Vypocitana cena jizdy = {0} Kc. Pro jizda_id: '{1}', stanice_id_start: '{2}' a stanice_id_cil: '{3}'.\n{4}", 
+				"Vypocitana cena jizdy = {0} Kc. Pro jizda_id: '{1}', stanice_id_start: '{2}' a stanice_id_cil: '{3}'.\n", 
 				JizdaTable.VypocitatCenuJizdy(jizda_id, stanice_id_start, stanice_id_cil, db), jizda_id, stanice_id_start, stanice_id_cil));
 		}
 
@@ -171,47 +220,48 @@ namespace Projekt
 
 
 		// 3. Evidence jízdenek
-		public void CreateJizdenku()
+		public void CreateJizdenka()
 		{
 			Jizdenka jizdenka1 = new Jizdenka { UzivatelId = 1, Cena = 0 };
 			Jizdenka jizdenka2 = new Jizdenka { UzivatelId = 1, Cena = 0 };
 			Jizdenka jizdenka3 = new Jizdenka { UzivatelId = 2, Cena = 0 };
+			Jizdenka jizdenka4 = new Jizdenka { UzivatelId = 2, Cena = 0 };
 
 			JizdenkaTable.Insert(jizdenka1, db);
 			JizdenkaTable.Insert(jizdenka2, db);
 			JizdenkaTable.Insert(jizdenka3, db);
+			JizdenkaTable.Insert(jizdenka4, db);
 		}
 
 		public void ZapsatJizduDoJizdenky()
 		{
-			Console.WriteLine("3.2. Zapsání jízdy do jízdenky:\nPred zapsanim jizdy do jizdenky:");
-			
-
 			JizdenkaTable.ZapsatJizdu(1, 1, 1, 5);
 			JizdenkaTable.ZapsatJizdu(1, 2, 5, 8);
 
-			Console.WriteLine("Po zapsani jizdy do jizdenky:");
-			
+			JizdenkaTable.ZapsatJizdu(2, 1, 1, 5);
+
+			JizdenkaTable.ZapsatJizdu(3, 1, 2, 5);
+			JizdenkaTable.ZapsatJizdu(3, 2, 5, 7);
 		}
 
 		public void DeleteJizdenka()
 		{
-			Console.WriteLine("3.3. Zrušení jízdenky:\nPred zrusenim jizdenky pro uzivatel_id: '1':");
-			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(1, db))
+			Console.WriteLine("3.3. Zrušení jízdenky:\nPred zrusenim jizdenky pro uzivatel_id: '3':");
+			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(3, db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
 
-			JizdenkaTable.Delete(1, db);
+			JizdenkaTable.Delete(3, db);
 			
-			Console.WriteLine("Po zruseni jizdenky pro uzivatel_id: '1':");
-			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(1, db))
+			Console.WriteLine("Po zruseni jizdenky pro uzivatel_id: '3':");
+			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(3, db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
 		}
 
 		public void SeznamJizdenek()
 		{
-			Console.WriteLine("Seznam jizdenek podle id uzivatele '1':");
+			Console.WriteLine("3.4. Seznam jízdenek - podle id uzivatele '1':");
 			foreach (JizdenkaJizda item in JizdenkaTable.SelectSeznam(1, db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -219,7 +269,7 @@ namespace Projekt
 
 		public void DetailJizdenky()
 		{
-			Console.WriteLine("Detail jizdenky s id '1':");
+			Console.WriteLine("3.5. Detail jízdenky - s id '1':");
 			foreach (JizdenkaJizda item in JizdenkaTable.SelectDetail(1, db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
@@ -238,7 +288,7 @@ namespace Projekt
 		{
 			Spoj spoj1 = new Spoj
 			{
-				Nazev = "LE 400",
+				Nazev = "LE 500",
 				CenaZaKm = 1,
 				KapacitaMist = 300,
 				Pravidelny = true,
@@ -248,50 +298,28 @@ namespace Projekt
 
 			Spoj spoj2 = new Spoj
 			{
-				Nazev = "RJ 106",
-				CenaZaKm = 2,
-				KapacitaMist = 150,
+				Nazev = "F",
+				CenaZaKm = 1,
+				KapacitaMist = 300,
 				Pravidelny = true,
-				SpolecnostId = 2,
-				Aktivni = true
-			};
-
-			Spoj spoj3 = new Spoj
-			{
-				Nazev = "SC 512",
-				CenaZaKm = 3,
-				KapacitaMist = 100,
-				Pravidelny = false,
-				SpolecnostId = 1,
-				Aktivni = true
-			};
-
-			Spoj spoj4 = new Spoj
-			{
-				Nazev = "SC 500",
-				CenaZaKm = 4,
-				KapacitaMist = 200,
-				Pravidelny = true,
-				SpolecnostId = 1,
+				SpolecnostId = 3,
 				Aktivni = true
 			};
 
 			SpojTable.Insert(spoj1, db);
 			SpojTable.Insert(spoj2, db);
-			SpojTable.Insert(spoj3, db);
-			SpojTable.Insert(spoj4, db);
 		}
 
 		public void UpdateSpoj()
 		{
-			Spoj spoj = SpojTable.SelectDetail(3, db);
+			Spoj spoj = SpojTable.SelectDetail(6, db);
 			spoj.Nazev = "[upraveno]";
 			SpojTable.Update(spoj);
 		}
 
 		public void DeleteSpoj()
 		{
-			SpojTable.Delete(3);
+			SpojTable.Delete(7);
 		}
 
 		public void SeznamSpoju()
@@ -318,51 +346,27 @@ namespace Projekt
 		// 5. Evidence příjezdů
 		public void CreatePrijezd()
 		{
-			Prijezd prijezd1 = new Prijezd { StaniceId = 1, SpojId = 1, Cas = new DateTime(1900, 1, 1, 14, 0, 0), Poradi = 1, Vzdalenost = 0 };
-			Prijezd prijezd2 = new Prijezd { StaniceId = 2, SpojId = 1, Cas = new DateTime(1900, 1, 1, 14, 10, 0), Poradi = 2, Vzdalenost = 10 };
-			Prijezd prijezd3 = new Prijezd { StaniceId = 3, SpojId = 1, Cas = new DateTime(1900, 1, 1, 14, 20, 0), Poradi = 3, Vzdalenost = 20 };
-			Prijezd prijezd4 = new Prijezd { StaniceId = 5, SpojId = 1, Cas = new DateTime(1900, 1, 1, 14, 30, 0), Poradi = 4, Vzdalenost = 30 };
-			Prijezd prijezd5 = new Prijezd { StaniceId = 6, SpojId = 1, Cas = new DateTime(1900, 1, 1, 14, 40, 0), Poradi = 5, Vzdalenost = 40 };
-
-			Prijezd prijezd6 = new Prijezd { StaniceId = 4, SpojId = 2, Cas = new DateTime(1900, 1, 1, 14, 35, 0), Poradi = 1, Vzdalenost = 0 };
-			Prijezd prijezd7 = new Prijezd { StaniceId = 5, SpojId = 2, Cas = new DateTime(1900, 1, 1, 14, 45, 0), Poradi = 2, Vzdalenost = 10 };
-			Prijezd prijezd8 = new Prijezd { StaniceId = 7, SpojId = 2, Cas = new DateTime(1900, 1, 1, 14, 55, 0), Poradi = 3, Vzdalenost = 20 };
-			Prijezd prijezd9 = new Prijezd { StaniceId = 8, SpojId = 2, Cas = new DateTime(1900, 1, 1, 15, 5, 0), Poradi = 4, Vzdalenost = 30 };
-			Prijezd prijezd10 = new Prijezd { StaniceId = 9, SpojId = 2, Cas = new DateTime(1900, 1, 1, 15, 9, 0), Poradi = 5, Vzdalenost = 80 };
-
-			Prijezd prijezd11 = new Prijezd { StaniceId = 4, SpojId = 3, Cas = new DateTime(1900, 1, 1, 14, 35, 0), Poradi = 1, Vzdalenost = 0 };
-			Prijezd prijezd12 = new Prijezd { StaniceId = 5, SpojId = 3, Cas = new DateTime(1900, 1, 1, 14, 45, 0), Poradi = 2, Vzdalenost = 10 };
-			Prijezd prijezd13 = new Prijezd { StaniceId = 7, SpojId = 3, Cas = new DateTime(1900, 1, 1, 14, 55, 0), Poradi = 3, Vzdalenost = 20 };
-			Prijezd prijezd14 = new Prijezd { StaniceId = 8, SpojId = 3, Cas = new DateTime(1900, 1, 1, 15, 5, 0), Poradi = 4, Vzdalenost = 30 };
-			Prijezd prijezd15 = new Prijezd { StaniceId = 9, SpojId = 3, Cas = new DateTime(1900, 1, 1, 15, 9, 0), Poradi = 5, Vzdalenost = 80 };
+			Prijezd prijezd1 = new Prijezd 
+			{
+				StaniceId = 12,
+				SpojId = 3,
+				Cas = new DateTime(1900, 1, 1, 15, 50, 0),
+				Poradi = 5, Vzdalenost = 40
+			};
 
 			PrijezdTable.Insert(prijezd1, db);
-			PrijezdTable.Insert(prijezd2, db);
-			PrijezdTable.Insert(prijezd3, db);
-			PrijezdTable.Insert(prijezd4, db);
-			PrijezdTable.Insert(prijezd5, db);
-			PrijezdTable.Insert(prijezd6, db);
-			PrijezdTable.Insert(prijezd7, db);
-			PrijezdTable.Insert(prijezd8, db);
-			PrijezdTable.Insert(prijezd9, db);
-			PrijezdTable.Insert(prijezd10, db);
-			PrijezdTable.Insert(prijezd11, db);
-			PrijezdTable.Insert(prijezd12, db);
-			PrijezdTable.Insert(prijezd13, db);
-			PrijezdTable.Insert(prijezd14, db);
-			PrijezdTable.Insert(prijezd15, db);
 		}
 
 		public void UdpatePrijezd()
 		{
-			Prijezd prijezd = PrijezdTable.SelectDetail(6, 1, db);
+			Prijezd prijezd = PrijezdTable.SelectDetail(12, 3, db);
 			prijezd.Vzdalenost = 9999;
 			PrijezdTable.Update(prijezd);
 		}
 
 		public void DeletePrijezd()
 		{
-			PrijezdTable.Delete(9, 2, db);
+			PrijezdTable.Delete(11, 3, db);
 		}
 
 		public void SeznamPrijezdu()
@@ -425,6 +429,7 @@ namespace Projekt
 
 
 
+		
 		
 		
 		

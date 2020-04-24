@@ -96,7 +96,7 @@ FROM jizdenka_jizda jj
 	JOIN Mesto m ON st.mesto_id = m.mesto_id
 	JOIN Stanice st2 ON jj.stanice_id_cil = st2.stanice_id
 	JOIN Mesto m2 ON st2.mesto_id = m2.mesto_id
-WHERE ji.jizdenka_id = 1
+WHERE u.uzivatel_id = 1
 
 
 SELECT ji.jizdenka_id, ji.uzivatel_id, ji.cena,
