@@ -12,6 +12,7 @@
 		public Stanice StaniceCil { get; set; }
 		public int Poradi { get; set; }
 
+		//Artificial columns (physically not in the database)
 		public string Info { get { return string.Format("Jizdenka '{0}' uzivatele '{1}'; cena '{2} Kc'; datum '{3}'; spoj '{4}' '{5}'; z '{6}' do '{7}'", 
 			Jizdenka.Id, Jizdenka.Uzivatel.FullName, Jizdenka.Cena, Jizda.DatumStart.ToString("dd.MM.yyyy"), Jizda.Spoj.Nazev, Jizda.Spoj.Spolecnost.Nazev, StaniceStart.Nazev, StaniceCil.Nazev); } }
 

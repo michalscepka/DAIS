@@ -14,8 +14,8 @@ namespace Projekt.ORM.DAO
         public static string SQL_DELETE_ID = "UPDATE Spoj SET aktivni = 0 WHERE spoj_id = @id";
         public static string SQL_SELECT_BY_STANICE = "SELECT s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email " +
             "FROM Spoj s JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id JOIN Prijezd p ON s.spoj_id = p.spoj_id WHERE p.stanice_id=@id";
-        public static string SQL_SELECT_ID = "SELECT s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email " +
-            "FROM Spoj s JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id WHERE spoj_id=@id";
+        public static string SQL_SELECT_ID = "SELECT s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email, " +
+            "j.jizda_id, j.datum_start, j.datum_cil FROM Spoj s LEFT JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id LEFT JOIN Jizda j ON s.spoj_id = j.spoj_id WHERE s.spoj_id= @id";
 
         // 4.1. Vytvoření nového spoje.
         public static int Insert(Spoj spoj, Database pDb = null)
@@ -113,7 +113,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@id", stanice_id);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Spoj> spoje = Read(reader);
+            Collection<Spoj> spoje = ReadSeznam(reader);
             reader.Close();
 
             if (pDb == null)
@@ -142,12 +142,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@id", id);
             SqlDataReader reader = db.Select(command);
 
-            Collection<Spoj> spoje = Read(reader);
-            Spoj spoj = null;
-            if (spoje.Count == 1)
-            {
-                spoj = spoje[0];
-            }
+            Spoj spoj = ReadDetail(reader);
             reader.Close();
 
             if (pDb == null)
@@ -169,7 +164,7 @@ namespace Projekt.ORM.DAO
             command.Parameters.AddWithValue("@aktivni", spoj.Aktivni);
         }
 
-        private static Collection<Spoj> Read(SqlDataReader reader)
+        private static Collection<Spoj> ReadSeznam(SqlDataReader reader)
         {
             Collection<Spoj> spoje = new Collection<Spoj>();
 
@@ -196,7 +191,68 @@ namespace Projekt.ORM.DAO
 
                 spoje.Add(spoj);
             }
+
             return spoje;
+        }
+
+        private static Spoj ReadDetail(SqlDataReader reader)
+        {
+            Spoj spoj = null;
+
+            while (reader.Read())
+            {
+                int i = -1;
+                if(spoj == null)
+                {
+                    spoj = new Spoj
+                    {
+                        Id = reader.GetInt32(++i),
+                        Nazev = reader.GetString(++i),
+                        CenaZaKm = reader.GetInt32(++i),
+                        KapacitaMist = reader.GetInt32(++i),
+                        Pravidelny = reader.GetBoolean(++i),
+                        Aktivni = reader.GetBoolean(++i),
+                        SpolecnostId = reader.GetInt32(++i),
+                        Spolecnost = new Spolecnost
+                        {
+                            Id = reader.GetInt32(i),
+                            Nazev = reader.GetString(++i),
+                            Web = reader.GetString(++i),
+                            Email = reader.GetString(++i)
+                        }
+                    };
+                    spoj.Jizdy = new Collection<Jizda>();
+                    if (!reader.IsDBNull(++i))
+                    {
+                        Jizda jizda = new Jizda
+                        {
+                            Id = reader.GetInt32(i),
+                            DatumStart = reader.GetDateTime(++i),
+                            DatumCil = reader.GetDateTime(++i),
+                            SpojId = spoj.Id,
+                            Spoj = spoj
+                        };
+                        spoj.Jizdy.Add(jizda);
+                    }
+                }
+                else
+                {
+                    i = 9;
+                    if (!reader.IsDBNull(++i))
+                    {
+                        Jizda jizda = new Jizda
+                        {
+                            Id = reader.GetInt32(i),
+                            DatumStart = reader.GetDateTime(++i),
+                            DatumCil = reader.GetDateTime(++i),
+                            SpojId = spoj.Id,
+                            Spoj = spoj
+                        };
+                        spoj.Jizdy.Add(jizda);
+                    }
+                }   
+            }
+            return spoj;
         }
     }
 }

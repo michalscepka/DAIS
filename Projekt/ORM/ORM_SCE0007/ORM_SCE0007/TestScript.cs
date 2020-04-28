@@ -327,7 +327,12 @@ namespace Projekt
 		
 		public void DetailSpoje()
 		{
-			Console.WriteLine(string.Format("4.5. Detail spoje - id '2':\n{0}\n", SpojTable.SelectDetail(2, db).ToString()));
+			Spoj spoj = SpojTable.SelectDetail(2, db);
+
+			Console.WriteLine(string.Format("4.5. Detail spoje - id '2':\n{0}\nKolekce jizd pro spoj_id '2':", spoj));
+
+			foreach (Jizda item in spoj.Jizdy)
+				Console.WriteLine(item.Info);
 		}
 
 

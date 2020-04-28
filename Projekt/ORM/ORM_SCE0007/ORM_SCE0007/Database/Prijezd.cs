@@ -12,6 +12,7 @@ namespace Projekt.ORM
 		public int Poradi { get; set; }
 		public int Vzdalenost { get; set; }
 
+		//Artificial columns (physically not in the database)
 		public string Info { get { return string.Format("Prijezd: na stanici '{0}' ve meste '{1}', pro spoj '{2}' od spolecnosti '{3}'", 
 			Stanice.Nazev, Stanice.Mesto.Nazev, Spoj.Nazev, Spoj.Spolecnost.Nazev); } }
 

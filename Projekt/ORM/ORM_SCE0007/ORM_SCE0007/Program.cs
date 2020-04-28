@@ -54,7 +54,7 @@ namespace Projekt
             testScript.SeznamJizdenek();
             // 3.5. Detail jízdenky
             testScript.DetailJizdenky();
-
+            
             Print("4. Evidence spojů");
 
             // 4.1. Vytvoření nového spoje

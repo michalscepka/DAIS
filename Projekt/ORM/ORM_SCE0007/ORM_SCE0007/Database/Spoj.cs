@@ -1,4 +1,6 @@
-﻿namespace Projekt.ORM
+﻿using System.Collections.ObjectModel;
+
+namespace Projekt.ORM
 {
 	public class Spoj
 	{
@@ -10,6 +12,7 @@
 		public int SpolecnostId { get; set; }
 		public Spolecnost Spolecnost { get; set; }
 		public bool Aktivni { get; set; }
+		public Collection<Jizda> Jizdy { get; set; }
 
 		public override string ToString()
 		{
