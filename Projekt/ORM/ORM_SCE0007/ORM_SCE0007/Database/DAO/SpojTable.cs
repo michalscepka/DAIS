@@ -13,7 +13,8 @@ namespace Projekt.ORM.DAO
             "spolecnost_id=@spolecnost_id, aktivni=@aktivni WHERE spoj_id=@id";
         public static string SQL_DELETE_ID = "UPDATE Spoj SET aktivni = 0 WHERE spoj_id = @id";
         public static string SQL_SELECT_BY_STANICE = "SELECT s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email " +
-            "FROM Spoj s JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id JOIN Prijezd p ON s.spoj_id = p.spoj_id WHERE p.stanice_id=@id";
+            "FROM Spoj s JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id JOIN Prijezd p ON s.spoj_id = p.spoj_id JOIN Stanice st ON p.stanice_id = st.stanice_id " +
+            "WHERE st.nazev LIKE '%' + @input + '%' AND s.aktivni = 1";
         public static string SQL_SELECT_ID = "SELECT s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email, " +
             "j.jizda_id, j.datum_start, j.datum_cil FROM Spoj s LEFT JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id LEFT JOIN Jizda j ON s.spoj_id = j.spoj_id WHERE s.spoj_id= @id";
 
@@ -96,7 +97,7 @@ namespace Projekt.ORM.DAO
         }
 
         // 4.4. Seznam spojů.
-        public static Collection<Spoj> SelectSeznam(int stanice_id, Database pDb = null)
+        public static Collection<Spoj> SelectSeznam(string input, Database pDb = null)
         {
             Database db;
             if (pDb == null)
@@ -110,7 +111,7 @@ namespace Projekt.ORM.DAO
             }
 
             SqlCommand command = db.CreateCommand(SQL_SELECT_BY_STANICE);
-            command.Parameters.AddWithValue("@id", stanice_id);
+            command.Parameters.AddWithValue("@input", input);
             SqlDataReader reader = db.Select(command);
 
             Collection<Spoj> spoje = ReadSeznam(reader);

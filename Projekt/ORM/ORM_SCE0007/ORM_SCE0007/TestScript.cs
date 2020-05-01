@@ -319,8 +319,8 @@ namespace Projekt
 
 		public void SeznamSpoju()
 		{
-			Console.WriteLine("4.4. Seznam spojů - projizdejicich stanici id '2':");
-			foreach (Spoj item in SpojTable.SelectSeznam(2, db))
+			Console.WriteLine("4.4. Seznam spojů - projizdejicich stanici 'Ostrava hl.n.':");
+			foreach (Spoj item in SpojTable.SelectSeznam("Ostrava hl.n.", db))
 				Console.WriteLine(item.ToString());
 			Console.WriteLine();
 		}
