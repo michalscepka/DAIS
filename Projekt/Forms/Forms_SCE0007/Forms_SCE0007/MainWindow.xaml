@@ -9,7 +9,7 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="10"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -18,8 +18,8 @@
 			<MenuItem Header="Najít spojení" Click="FindConnection_Click" />
 			<MenuItem Header="Moje jízdenky" Click="MyTickets_Click"/>
 			<MenuItem Header="Najít vlak" Click="FindTrain_Click"/>
-			<MenuItem Header="Přehled příjezdů" />
-			<MenuItem Header="Seznam stanic" />
+			<MenuItem Header="Přehled příjezdů" Click="FindArrival_Click"/>
+			<MenuItem Header="Seznam stanic" Click="FindStation_Click"/>
 			<MenuItem Header="Vlaková společnost">
 				<MenuItem Header="Správa spojů" />
 				<MenuItem Header="Správa jízd" />
@@ -30,6 +30,10 @@
 				<MenuItem Header="Správa společností" />
 			</MenuItem>
 		</Menu>
+
+		<Grid Grid.Row="1">
+			<Label x:Name="lb_section" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+		</Grid>
 
 		<Grid Grid.Row="2">
 			<ContentPresenter x:Name="Content"/>

@@ -43,22 +43,38 @@ namespace Forms_SCE0007
 		
 		private void UserDetail_Click(object sender, RoutedEventArgs e)
 		{
+			lb_section.Content = "Můj profil:";
 			Content.Content = new UserDetail(uzivatel_id);
 		}
 
 		private void FindConnection_Click(object sender, RoutedEventArgs e)
 		{
-			Content.Content = new FindConnection();
+			lb_section.Content = "Najít spojení:";
+			Content.Content = new FindConnection(uzivatel_id);
 		}
 
 		private void MyTickets_Click(object sender, RoutedEventArgs e)
 		{
+			lb_section.Content = "Moje jízdenky:";
 			Content.Content = new MyTickets(uzivatel_id);
 		}
 
 		private void FindTrain_Click(object sender, RoutedEventArgs e)
 		{
+			lb_section.Content = "Najít vlak:";
 			Content.Content = new FindTrain();
+		}
+		
+		private void FindArrival_Click(object sender, RoutedEventArgs e)
+		{
+			lb_section.Content = "Přehled příjezdů:";
+			Content.Content = new FindArrival();
+		}
+
+		private void FindStation_Click(object sender, RoutedEventArgs e)
+		{
+			lb_section.Content = "Seznam stanic:";
+			Content.Content = new FindStation();
 		}
 
 		private void InsertData()

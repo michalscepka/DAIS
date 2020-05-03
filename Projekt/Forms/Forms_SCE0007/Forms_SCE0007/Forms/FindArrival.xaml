@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Forms_SCE0007.Forms.FindArrival"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Forms_SCE0007.Forms"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+	<Grid>
+		<DataGrid Name="dataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,33,0,0" SelectionMode="Single">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Stancie" Binding="{Binding Stanice.Nazev}"/>
+				<DataGridTextColumn Header="Město" Binding="{Binding Stanice.Mesto.Nazev}"/>
+				<DataGridTextColumn Header="Spoj" Binding="{Binding Spoj.Nazev}"/>
+				<DataGridTextColumn Header="Společnost" Binding="{Binding Spoj.Spolecnost.Nazev}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<Label Content="Stanice:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+		<TextBox x:Name="tb_station" Text="Ostrava-Svinov" HorizontalAlignment="Left" Margin="65,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
+
+		<Label Content="Spoj:" HorizontalAlignment="Left" Margin="170,0,0,0" VerticalAlignment="Top"/>
+		<TextBox x:Name="tb_connection" HorizontalAlignment="Left" Margin="211,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
+
+		<Label Content="Čas:" HorizontalAlignment="Left" Margin="316,0,0,0" VerticalAlignment="Top"/>
+		<TextBox x:Name="tb_time" HorizontalAlignment="Left" Margin="352,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
+
+		<Label Content="Datum:" HorizontalAlignment="Left" Margin="457,0,0,0" VerticalAlignment="Top"/>
+		<TextBox x:Name="tb_date" HorizontalAlignment="Left" Margin="510,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
+
+		<Button Content="Vyhledat" HorizontalAlignment="Right" Margin="0,3,59,0" VerticalAlignment="Top" Width="80" Click="ButtonFind_Click"/>
+
+	</Grid>
+</UserControl>

@@ -372,7 +372,7 @@ namespace Forms_SCE0007
 
 		public void SeznamPrijezdu()
 		{
-			Console.WriteLine("5.4. Seznam příjezdů - filtrace podle vstupu 'Ostrava-Svinov', 'LE', '14:00', '2020-06-05:");
+			Console.WriteLine("5.4. Seznam příjezdů - filtrace podle vstupu 'Ostrava-Svinov', '', '14:00', '2020-06-05:");
 			foreach (Prijezd item in PrijezdTable.SelectSeznam("Ostrava-Svinov", "", new DateTime(1900, 1, 1, 14, 0, 0), new DateTime(2020, 6, 5), db))
 				Console.WriteLine(item.Info);
 			Console.WriteLine();
