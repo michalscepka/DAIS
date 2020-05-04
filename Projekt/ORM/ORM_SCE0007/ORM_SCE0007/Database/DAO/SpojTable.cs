@@ -16,7 +16,7 @@ namespace Projekt.ORM.DAO
             "FROM Spoj s JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id JOIN Prijezd p ON s.spoj_id = p.spoj_id JOIN Stanice st ON p.stanice_id = st.stanice_id " +
             "WHERE st.nazev LIKE '%' + @input + '%' AND s.aktivni = 1";
         public static string SQL_SELECT_ID = "SELECT s.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email, " +
-            "j.jizda_id, j.datum_start, j.datum_cil FROM Spoj s LEFT JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id LEFT JOIN Jizda j ON s.spoj_id = j.spoj_id WHERE s.spoj_id= @id";
+            "j.jizda_id, j.datum_start, j.datum_cil FROM Spoj s LEFT JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id LEFT JOIN Jizda j ON s.spoj_id = j.spoj_id WHERE s.spoj_id=@id";
 
         // 4.1. Vytvoření nového spoje.
         public static int Insert(Spoj spoj, Database pDb = null)

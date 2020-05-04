@@ -243,7 +243,7 @@ namespace Projekt
 			JizdenkaTable.ZapsatJizdu(1, 1, 1, 5);
 			JizdenkaTable.ZapsatJizdu(1, 2, 5, 8);
 
-			JizdenkaTable.ZapsatJizdu(2, 1, 1, 5);
+			JizdenkaTable.ZapsatJizdu(2, 1, 2, 5);
 
 			JizdenkaTable.ZapsatJizdu(3, 1, 2, 5);
 			JizdenkaTable.ZapsatJizdu(3, 2, 5, 7);
@@ -371,7 +371,7 @@ namespace Projekt
 
 		public void SeznamPrijezdu()
 		{
-			Console.WriteLine("5.4. Seznam příjezdů - filtrace podle vstupu 'Ostrava-Svinov', 'LE', '14:00', '2020-06-05:");
+			Console.WriteLine("5.4. Seznam příjezdů - filtrace podle vstupu 'Ostrava-Svinov', '', '14:00', '2020-06-05:");
 			foreach (Prijezd item in PrijezdTable.SelectSeznam("Ostrava-Svinov", "", new DateTime(1900, 1, 1, 14, 0, 0), new DateTime(2020, 6, 5), db))
 				Console.WriteLine(item.Info);
 			Console.WriteLine();

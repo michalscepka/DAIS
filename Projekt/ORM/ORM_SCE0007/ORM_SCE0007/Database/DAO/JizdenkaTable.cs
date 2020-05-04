@@ -19,16 +19,16 @@ namespace Projekt.ORM.DAO
                 "sp.spolecnost_id, sp.nazev, sp.web, sp.email, " +
                 "st.stanice_id, st.nazev, st.mesto_id, m.nazev, m.kraj, " +
                 "st2.stanice_id, st2.nazev, st2.mesto_id, m2.nazev, m2.kraj " +
-            "FROM jizdenka_jizda jj " +
-                "JOIN Jizdenka ji ON jj.jizdenka_id = ji.jizdenka_id " +
-                "JOIN Uzivatel u ON ji.uzivatel_id = u.uzivatel_id " +
-                "JOIN Jizda j ON jj.jizda_id = j.jizda_id " +
-                "JOIN Spoj s ON j.spoj_id = s.spoj_id " +
-                "JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id " +
-                "JOIN Stanice st ON jj.stanice_id_start = st.stanice_id " +
-                "JOIN Mesto m ON st.mesto_id = m.mesto_id " +
-                "JOIN Stanice st2 ON jj.stanice_id_cil = st2.stanice_id " +
-                "JOIN Mesto m2 ON st2.mesto_id = m2.mesto_id " +
+            "FROM Jizdenka ji " +
+                "LEFT JOIN jizdenka_jizda jj ON ji.jizdenka_id = jj.jizdenka_id " +
+                "LEFT JOIN Uzivatel u ON ji.uzivatel_id = u.uzivatel_id " +
+                "LEFT JOIN Jizda j ON jj.jizda_id = j.jizda_id " +
+                "LEFT JOIN Spoj s ON j.spoj_id = s.spoj_id " +
+                "LEFT JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id " +
+                "LEFT JOIN Stanice st ON jj.stanice_id_start = st.stanice_id " +
+                "LEFT JOIN Mesto m ON st.mesto_id = m.mesto_id " +
+                "LEFT JOIN Stanice st2 ON jj.stanice_id_cil = st2.stanice_id " +
+                "LEFT JOIN Mesto m2 ON st2.mesto_id = m2.mesto_id " +
             "WHERE u.uzivatel_id=@id";
         public static string SQL_SELECT_ID =
             "SELECT jj.jizdenka_id, jj.jizda_id, jj.stanice_id_start, jj.stanice_id_cil, jj.poradi, " +
@@ -39,16 +39,16 @@ namespace Projekt.ORM.DAO
                 "sp.spolecnost_id, sp.nazev, sp.web, sp.email, " +
                 "st.stanice_id, st.nazev, st.mesto_id, m.nazev, m.kraj, " +
                 "st2.stanice_id, st2.nazev, st2.mesto_id, m2.nazev, m2.kraj " +
-            "FROM jizdenka_jizda jj " +
-                "JOIN Jizdenka ji ON jj.jizdenka_id = ji.jizdenka_id " +
-                "JOIN Uzivatel u ON ji.uzivatel_id = u.uzivatel_id " +
-                "JOIN Jizda j ON jj.jizda_id = j.jizda_id " +
-                "JOIN Spoj s ON j.spoj_id = s.spoj_id " +
-                "JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id " +
-                "JOIN Stanice st ON jj.stanice_id_start = st.stanice_id " +
-                "JOIN Mesto m ON st.mesto_id = m.mesto_id " +
-                "JOIN Stanice st2 ON jj.stanice_id_cil = st2.stanice_id " +
-                "JOIN Mesto m2 ON st2.mesto_id = m2.mesto_id " +
+            "FROM Jizdenka ji " +
+                "LEFT JOIN jizdenka_jizda jj ON ji.jizdenka_id = jj.jizdenka_id " +
+                "LEFT JOIN Uzivatel u ON ji.uzivatel_id = u.uzivatel_id " +
+                "LEFT JOIN Jizda j ON jj.jizda_id = j.jizda_id " +
+                "LEFT JOIN Spoj s ON j.spoj_id = s.spoj_id " +
+                "LEFT JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id " +
+                "LEFT JOIN Stanice st ON jj.stanice_id_start = st.stanice_id " +
+                "LEFT JOIN Mesto m ON st.mesto_id = m.mesto_id " +
+                "LEFT JOIN Stanice st2 ON jj.stanice_id_cil = st2.stanice_id " +
+                "LEFT JOIN Mesto m2 ON st2.mesto_id = m2.mesto_id " +
             "WHERE jj.jizdenka_id=@id";
 
         // 3.1. Vytvoření jízdenky.
@@ -205,14 +205,21 @@ namespace Projekt.ORM.DAO
             while (reader.Read())
             {
                 int i = -1;
-                JizdenkaJizda jizdenka_jizda = new JizdenkaJizda
+
+                JizdenkaJizda jizdenka_jizda = new JizdenkaJizda();
+                if (!reader.IsDBNull(++i))
                 {
-                    JizdenkaId = reader.GetInt32(++i),
-                    JizdaId = reader.GetInt32(++i),
-                    StaniceIdStart = reader.GetInt32(++i),
-                    StaniceIdCil = reader.GetInt32(++i),
-                    Poradi = reader.GetInt32(++i)
-                };
+                    jizdenka_jizda.JizdenkaId = reader.GetInt32(i);
+                    jizdenka_jizda.JizdaId = reader.GetInt32(++i);
+                    jizdenka_jizda.StaniceIdStart = reader.GetInt32(++i);
+                    jizdenka_jizda.StaniceIdCil = reader.GetInt32(++i);
+                    jizdenka_jizda.Poradi = reader.GetInt32(++i);
+                }
+                else
+                {
+                    i = 4;
+                }
+
                 jizdenka_jizda.Jizdenka = new Jizdenka
                 {
                     Id = reader.GetInt32(++i),
@@ -233,54 +240,76 @@ namespace Projekt.ORM.DAO
                 {
                     jizdenka_jizda.Jizdenka.Uzivatel.PosledniNavsteva = reader.GetDateTime(i);
                 }
-                jizdenka_jizda.Jizda = new Jizda
+
+                if (!reader.IsDBNull(++i))
                 {
-                    Id = reader.GetInt32(++i),
-                    DatumStart = reader.GetDateTime(++i),
-                    DatumCil = reader.GetDateTime(++i),
-                    SpojId = reader.GetInt32(++i)
-                };
-                jizdenka_jizda.Jizda.Spoj = new Spoj
+                    jizdenka_jizda.Jizda = new Jizda
+                    {
+                        Id = reader.GetInt32(i),
+                        DatumStart = reader.GetDateTime(++i),
+                        DatumCil = reader.GetDateTime(++i),
+                        SpojId = reader.GetInt32(++i)
+                    };
+                    jizdenka_jizda.Jizda.Spoj = new Spoj
+                    {
+                        Id = reader.GetInt32(i),
+                        Nazev = reader.GetString(++i),
+                        CenaZaKm = reader.GetInt32(++i),
+                        KapacitaMist = reader.GetInt32(++i),
+                        Pravidelny = reader.GetBoolean(++i),
+                        SpolecnostId = reader.GetInt32(++i),
+                        Aktivni = reader.GetBoolean(++i)
+                    };
+                    jizdenka_jizda.Jizda.Spoj.Spolecnost = new Spolecnost
+                    {
+                        Id = reader.GetInt32(++i),
+                        Nazev = reader.GetString(++i),
+                        Web = reader.GetString(++i),
+                        Email = reader.GetString(++i)
+                    };
+                    jizdenka_jizda.StaniceStart = new Stanice
+                    {
+                        Id = reader.GetInt32(++i),
+                        Nazev = reader.GetString(++i),
+                        MestoId = reader.GetInt32(++i)
+                    };
+                    jizdenka_jizda.StaniceStart.Mesto = new Mesto
+                    {
+                        Id = reader.GetInt32(i),
+                        Nazev = reader.GetString(++i),
+                        Kraj = reader.GetString(++i)
+                    };
+                    jizdenka_jizda.StaniceCil = new Stanice
+                    {
+                        Id = reader.GetInt32(++i),
+                        Nazev = reader.GetString(++i),
+                        MestoId = reader.GetInt32(++i)
+                    };
+                    jizdenka_jizda.StaniceCil.Mesto = new Mesto
+                    {
+                        Id = reader.GetInt32(i),
+                        Nazev = reader.GetString(++i),
+                        Kraj = reader.GetString(++i)
+                    };
+                }
+                else
                 {
-                    Id = reader.GetInt32(i),
-                    Nazev = reader.GetString(++i),
-                    CenaZaKm = reader.GetInt32(++i),
-                    KapacitaMist = reader.GetInt32(++i),
-                    Pravidelny = reader.GetBoolean(++i),
-                    SpolecnostId = reader.GetInt32(++i),
-                    Aktivni = reader.GetBoolean(++i)
-                };
-                jizdenka_jizda.Jizda.Spoj.Spolecnost = new Spolecnost
-                {
-                    Id = reader.GetInt32(++i),
-                    Nazev = reader.GetString(++i),
-                    Web = reader.GetString(++i),
-                    Email = reader.GetString(++i)
-                };
-                jizdenka_jizda.StaniceStart = new Stanice
-                {
-                    Id = reader.GetInt32(++i),
-                    Nazev = reader.GetString(++i),
-                    MestoId = reader.GetInt32(++i)
-                };
-                jizdenka_jizda.StaniceStart.Mesto = new Mesto
-                {
-                    Id = reader.GetInt32(i),
-                    Nazev = reader.GetString(++i),
-                    Kraj = reader.GetString(++i)
-                };
-                jizdenka_jizda.StaniceCil = new Stanice
-                {
-                    Id = reader.GetInt32(++i),
-                    Nazev = reader.GetString(++i),
-                    MestoId = reader.GetInt32(++i)
-                };
-                jizdenka_jizda.StaniceCil.Mesto = new Mesto
-                {
-                    Id = reader.GetInt32(i),
-                    Nazev = reader.GetString(++i),
-                    Kraj = reader.GetString(++i)
-                };
+                    jizdenka_jizda.Jizda = new Jizda
+                    {
+                        Spoj = new Spoj
+                        {
+                            Spolecnost = new Spolecnost()
+                        }
+                    };
+                    jizdenka_jizda.StaniceStart = new Stanice
+                    {
+                        Mesto = new Mesto()
+                    };
+                    jizdenka_jizda.StaniceCil = new Stanice
+                    {
+                        Mesto = new Mesto()
+                    };
+                }
 
                 jizdenka_jizdy.Add(jizdenka_jizda);
             }
