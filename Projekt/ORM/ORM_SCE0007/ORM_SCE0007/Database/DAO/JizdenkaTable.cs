@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 
 namespace Projekt.ORM.DAO
@@ -7,7 +8,7 @@ namespace Projekt.ORM.DAO
 	{
         public static string TABLE_NAME = "Jizdenka";
 
-        public static string SQL_INSERT = "INSERT INTO Jizdenka (uzivatel_id, cena) VALUES (@uzivatel_id, @cena)";
+        public static string SQL_INSERT = "INSERT INTO Jizdenka (uzivatel_id, cena) VALUES (@uzivatel_id, @cena); SELECT SCOPE_IDENTITY();";
         public static string SQL_ZAPSAT_JIZDU = "EXEC PridatJizduDoJizdenky @jizdenka_id, @jizda_id, @stanice_id_start, @stanice_id_cil";
         public static string SQL_DELETE_ID = "EXEC ZrusitJizdenku @id";
         public static string SQL_SELECT_BY_USER =
@@ -67,14 +68,15 @@ namespace Projekt.ORM.DAO
 
             SqlCommand command = db.CreateCommand(SQL_INSERT);
             PrepareCommand(command, jizdenka);
-            int ret = db.ExecuteNonQuery(command);
+            decimal val = (decimal)command.ExecuteScalar();
+            int result = Decimal.ToInt32(val);
 
             if (pDb == null)
             {
                 db.Close();
             }
 
-            return ret;
+            return result;
         }
 
         // 3.2. Zapsání jízdy do jízdenky.

@@ -45,6 +45,8 @@ INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, a
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('SC 512', 4, 170, 1, 1, 1);
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 1006', 5, 100, 0, 2, 1);
 INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 401', 2, 180, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 500', 1, 300, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('F', 1, 300, 1, 3, 1);
 
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (1, 1, '14:00', 1, 0);
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (2, 1, '14:10', 2, 10);
@@ -72,3 +74,27 @@ INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (4, 5,
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (5, 5, '16:45', 2, 10);
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (7, 5, '16:55', 3, 20);
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (8, 5, '17:05', 4, 30);
+
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('pepa13', 'Pepa', 'Zamotany', 'pepa.zamotany@gmail.com', 'zakaznik', '2019-04-24 12:30:50', 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('noobmaster', 'Pavel', 'Maly', 'pavel.maly@gmail.com', 'zakaznik', '2019-04-25 10:36:52', 1);
+INSERT INTO uzivatel (login, jmeno, prijmeni, email, typ, posledni_navsteva, aktivni)
+    VALUES ('rebarbora', 'Barbora', 'Velka', 'bara.velka@gmail.com', 'zakaznik', '2019-12-1 22:30:54', 1);
+
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-05', '2020-06-05', 1);
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-05', '2020-06-05', 2);
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-05', '2020-06-05', 3);
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-05', '2020-06-05', 4);
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-05', '2020-06-05', 5);
+
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-06', '2020-06-06', 1);
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-06', '2020-06-06', 2);
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-06', '2020-06-06', 3);
+
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-07', '2020-06-07', 1);
+
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (2, 0);
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (2, 0);

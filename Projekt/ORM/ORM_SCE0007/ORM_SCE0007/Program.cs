@@ -41,6 +41,8 @@ namespace Projekt
             testScript.DetailJizdy();
             // 2.6. Vypočítání ceny jízdy – podle délky trasy
             testScript.VypocitatCenuJizdy();
+            // 2.7. Zjisti data – přeložení cizích klíčů
+            testScript.ZjistiData();
 
             Print("3. Evidence jízdenek");
 

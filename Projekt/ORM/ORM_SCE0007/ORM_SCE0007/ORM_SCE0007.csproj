@@ -58,6 +58,7 @@
     <Compile Include="Database\Jizdenka.cs" />
     <Compile Include="Database\JizdenkaJizda.cs" />
     <Compile Include="Database\Mesto.cs" />
+    <Compile Include="Database\NalezenaJizda.cs" />
     <Compile Include="Database\Prijezd.cs" />
     <Compile Include="Database\Spoj.cs" />
     <Compile Include="Database\Spolecnost.cs" />

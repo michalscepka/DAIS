@@ -216,6 +216,11 @@ namespace Projekt
 				JizdaTable.VypocitatCenuJizdy(jizda_id, stanice_id_start, stanice_id_cil, db), jizda_id, stanice_id_start, stanice_id_cil));
 		}
 
+		public void ZjistiData()
+		{
+			Console.WriteLine(JizdaTable.ZjistiData(1, 5, 2, 1, 8, db));
+		}
+
 
 
 

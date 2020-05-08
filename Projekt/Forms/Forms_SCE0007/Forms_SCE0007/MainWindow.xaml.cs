@@ -1,20 +1,6 @@
 ﻿using Forms_SCE0007.Forms;
 using Projekt.ORM.DAO;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Forms_SCE0007
 {
@@ -24,67 +10,45 @@ namespace Forms_SCE0007
 	public partial class MainWindow : Window
 	{
 		private readonly Database db;
-		private readonly TestScript testScript;
-		private int uzivatel_id = 1;
+		private readonly InitScript initScript;
+		private readonly int uzivatel_id = 1;
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			CultureInfo.CurrentCulture = new CultureInfo("cs-CZ");
 
 			db = new Database();
 			db.Connect();
 
-			testScript  = new TestScript(db);
-			testScript.DbInit();
-
-			InsertData();
+			initScript  = new InitScript(db);
+			initScript.DbInit();
+			initScript.ZapsatJizduDoJizdenky();
 		}
 		
 		private void UserDetail_Click(object sender, RoutedEventArgs e)
 		{
 			lb_section.Content = "Můj profil:";
-			Content.Content = new UserDetail(uzivatel_id);
+			Content.Content = new UserDetail(uzivatel_id, db);
 		}
 
+		// 2.4 Vyhledání jízdy
 		private void FindConnection_Click(object sender, RoutedEventArgs e)
 		{
 			lb_section.Content = "Najít spojení:";
-			Content.Content = new FindConnection(uzivatel_id);
+			Content.Content = new FindConnection(uzivatel_id, db);
 		}
 
+		// 3.3 Seznam jízdenek
 		private void MyTickets_Click(object sender, RoutedEventArgs e)
 		{
 			lb_section.Content = "Moje jízdenky:";
-			Content.Content = new MyTickets(uzivatel_id);
-		}
-
-		private void FindTrain_Click(object sender, RoutedEventArgs e)
-		{
-			lb_section.Content = "Najít vlak:";
-			Content.Content = new FindTrain();
-		}
-		
-		private void FindArrival_Click(object sender, RoutedEventArgs e)
-		{
-			lb_section.Content = "Přehled příjezdů:";
-			Content.Content = new FindArrival();
+			Content.Content = new MyTickets(uzivatel_id, db);
 		}
 
 		private void FindStation_Click(object sender, RoutedEventArgs e)
 		{
 			lb_section.Content = "Seznam stanic:";
-			Content.Content = new FindStation();
-		}
-
-		private void InsertData()
-		{
-			testScript.CreateUzivatel();
-			testScript.CreateJizda();
-			testScript.CreateJizdenka();
-			testScript.ZapsatJizduDoJizdenky();
-			testScript.CreateSpoj();
-			testScript.CreatePrijezd();
+			Content.Content = new FindStation(db);
 		}
 	}
 }

@@ -17,18 +17,7 @@
 			<MenuItem Header="Můj profil" Click="UserDetail_Click" />
 			<MenuItem Header="Najít spojení" Click="FindConnection_Click" />
 			<MenuItem Header="Moje jízdenky" Click="MyTickets_Click"/>
-			<MenuItem Header="Najít vlak" Click="FindTrain_Click"/>
-			<MenuItem Header="Přehled příjezdů" Click="FindArrival_Click"/>
 			<MenuItem Header="Seznam stanic" Click="FindStation_Click"/>
-			<MenuItem Header="Vlaková společnost">
-				<MenuItem Header="Správa spojů" />
-				<MenuItem Header="Správa jízd" />
-				<MenuItem Header="Správa příjezdů" />
-			</MenuItem>
-			<MenuItem Header="Administrace">
-				<MenuItem Header="Správa uživatelů" />
-				<MenuItem Header="Správa společností" />
-			</MenuItem>
 		</Menu>
 
 		<Grid Grid.Row="1">

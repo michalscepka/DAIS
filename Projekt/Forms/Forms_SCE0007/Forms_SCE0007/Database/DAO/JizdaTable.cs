@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Forms_SCE0007;
+using System;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 
@@ -15,6 +16,7 @@ namespace Projekt.ORM.DAO
         public static string SQL_SELECT_ID = "SELECT j.jizda_id, j.datum_start, j.datum_cil, j.spoj_id, s.nazev, s.cena_za_km, s.kapacita_mist, s.pravidelny, s.aktivni, s.spolecnost_id, sp.nazev, sp.web, sp.email " +
             "FROM Jizda j JOIN Spoj s ON j.spoj_id = s.spoj_id JOIN Spolecnost sp ON s.spolecnost_id = sp.spolecnost_id WHERE jizda_id=@id";
         public static string SQL_SPOCITEJ_CENU = "SELECT dbo.SpocitejCenuJizdy(@jizda_id, @stanice_id_start, @stanice_id_cil) AS cena";
+        public static string SQL_ZJISTI_DATA = "EXEC ZjistiData @jizda_1_id, @prestup_id, @jizda_2_id, @start_stanice_id, @cil_stanice_id";
 
         // 2.1. Vytvoření nové jízdy.
         public static int Insert(Jizda jizda, Database pDb = null)
@@ -212,6 +214,47 @@ namespace Projekt.ORM.DAO
             }
 
             return ret;
+        }
+
+        // 2.7. Zjisti data
+        public static NalezenaJizda ZjistiData(int jizda_1_id, int prestup, int jizda_2_id, int start_stanice_id, int cil_stanice_id, Database pDb = null)
+        {
+            Database db;
+            if (pDb == null)
+            {
+                db = new Database();
+                db.Connect();
+            }
+            else
+            {
+                db = pDb;
+            }
+
+            SqlCommand command = db.CreateCommand(SQL_ZJISTI_DATA);
+            command.Parameters.AddWithValue("@jizda_1_id", jizda_1_id);
+            command.Parameters.AddWithValue("@prestup_id", prestup);
+            command.Parameters.AddWithValue("@jizda_2_id", jizda_2_id);
+            command.Parameters.AddWithValue("@start_stanice_id", start_stanice_id);
+            command.Parameters.AddWithValue("@cil_stanice_id", cil_stanice_id);
+            SqlDataReader reader = db.Select(command);
+
+            NalezenaJizda nalezenaJizda = new NalezenaJizda();
+
+            reader.Read();
+            int i = -1;
+            nalezenaJizda.Spoj1 = reader.GetString(++i);
+            nalezenaJizda.PrestupStanice = reader.GetString(++i);
+            nalezenaJizda.Spoj2 = reader.GetString(++i);
+            nalezenaJizda.CasOdjezdu = reader.GetTimeSpan(++i).ToString();
+            nalezenaJizda.CasPrijezdu = reader.GetTimeSpan(++i).ToString();
+            reader.Close();
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+
+            return nalezenaJizda;
         }
 
         private static void PrepareCommand(SqlCommand command, Jizda jizda)

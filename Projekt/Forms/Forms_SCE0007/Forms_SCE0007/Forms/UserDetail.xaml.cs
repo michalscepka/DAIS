@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using Projekt.ORM;
+using Projekt.ORM.DAO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Projekt.ORM;
-using Projekt.ORM.DAO;
 
 namespace Forms_SCE0007.Forms
 {
@@ -21,20 +10,20 @@ namespace Forms_SCE0007.Forms
 	/// </summary>
 	public partial class UserDetail : UserControl
 	{
-		private Uzivatel uzivatel;
-		//TODO odstranit promennou uzivatel_id
-		private int uzivatel_id;
+		private readonly Database db;
+		private Uzivatel uzivatel;		
 
-		public UserDetail(int uzivatel_id)
+		public UserDetail(int uzivatel_id, Database database)
 		{
 			InitializeComponent();
-			this.uzivatel_id = uzivatel_id;
+
+			this.db = database;
 			OpenRecord(uzivatel_id);
 		}
 
 		public void OpenRecord(int id)
 		{
-			uzivatel = UzivatelTable.SelectDetail(id);
+			uzivatel = UzivatelTable.SelectDetail(id, db);
 			BindData();
 		}
 
@@ -56,7 +45,7 @@ namespace Forms_SCE0007.Forms
 					cb_typ.SelectedIndex = 2;
 					break;
 			}
-			lb_last_visit.Content = uzivatel.PosledniNavsteva.ToString();
+			lb_last_visit.Content = uzivatel.PosledniNavsteva.HasValue ? uzivatel.PosledniNavsteva.ToString() : "N/A";
 			cb_active.IsChecked = uzivatel.Aktivni;
 		}
 
@@ -84,13 +73,13 @@ namespace Forms_SCE0007.Forms
 		private void SaveRecord_Click(object sender, RoutedEventArgs e)
 		{
 			GetData();
-			UzivatelTable.Update(uzivatel);
+			UzivatelTable.Update(uzivatel, db);
 		}
 
 		private void DeleteRecord_Click(object sender, RoutedEventArgs e)
 		{
-			UzivatelTable.Delete(uzivatel.Id);
-			OpenRecord(uzivatel_id);
+			UzivatelTable.Delete(uzivatel.Id, db);
+			OpenRecord(uzivatel.Id);
 		}
 	}
 }
