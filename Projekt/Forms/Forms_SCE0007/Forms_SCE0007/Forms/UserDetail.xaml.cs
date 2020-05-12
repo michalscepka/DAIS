@@ -1,5 +1,6 @@
 ﻿using Projekt.ORM;
 using Projekt.ORM.DAO;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -73,7 +74,14 @@ namespace Forms_SCE0007.Forms
 		private void SaveRecord_Click(object sender, RoutedEventArgs e)
 		{
 			GetData();
-			UzivatelTable.Update(uzivatel, db);
+			try
+			{
+				UzivatelTable.Update(uzivatel, db);
+			}
+			catch
+			{
+				MessageBox.Show("Uložení se nezdařilo.\nZnakový řetězec je příliš dlouhý.", "Varování", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
 		}
 
 		private void DeleteRecord_Click(object sender, RoutedEventArgs e)

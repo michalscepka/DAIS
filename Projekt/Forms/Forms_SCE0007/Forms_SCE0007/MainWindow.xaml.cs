@@ -9,20 +9,21 @@ namespace Forms_SCE0007
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private readonly Database db;
+		public readonly Database db;
+
 		private readonly InitScript initScript;
 		private readonly int uzivatel_id = 1;
 
 		public MainWindow()
 		{
 			InitializeComponent();
+			WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
 			db = new Database();
 			db.Connect();
 
 			initScript  = new InitScript(db);
 			initScript.DbInit();
-			initScript.ZapsatJizduDoJizdenky();
 		}
 		
 		private void UserDetail_Click(object sender, RoutedEventArgs e)

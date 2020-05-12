@@ -40,13 +40,13 @@ INSERT INTO spolecnost (nazev, web, email) VALUES ('Ceske Drahy', 'www.cd.cz', '
 INSERT INTO spolecnost (nazev, web, email) VALUES ('RegioJet', 'www.regiojet.cz', 'info@regiojet.cz');
 INSERT INTO spolecnost (nazev, web, email) VALUES ('LeoExpress', 'www.leoexpress.com', 'info@le.cz');
 
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 400', 3, 200, 1, 3, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 106', 2, 150, 1, 2, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('SC 512', 4, 170, 1, 1, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 1006', 5, 100, 0, 2, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 401', 2, 180, 1, 3, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 500', 1, 300, 1, 3, 1);
-INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('F', 1, 300, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 400', 3, 3, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 106', 2, 3, 1, 2, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('SC 512', 4, 3, 1, 1, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('RJ 1006', 5, 3, 0, 2, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 401', 2, 3, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('LE 500', 1, 3, 1, 3, 1);
+INSERT INTO spoj (nazev, cena_za_km, kapacita_mist, pravidelny, spolecnost_id, aktivni) VALUES ('F', 1, 3, 1, 3, 1);
 
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (1, 1, '14:00', 1, 0);
 INSERT INTO prijezd (stanice_id, spoj_id, cas, poradi, vzdalenost) VALUES (2, 1, '14:10', 2, 10);
@@ -94,7 +94,16 @@ INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-06', '2020-
 
 INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2020-06-07', '2020-06-07', 1);
 
-INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
-INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 0);
-INSERT INTO jizdenka (uzivatel_id, cena) VALUES (2, 0);
-INSERT INTO jizdenka (uzivatel_id, cena) VALUES (2, 0);
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 130);
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 80);
+
+INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi) VALUES (1, 1, 1, 5, 1)
+INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi)	VALUES (1, 2, 5, 8, 2)
+INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi)	VALUES (2, 1, 2, 5, 1)
+
+-- jizdenka, ktera se jiz neda zrusit
+INSERT INTO jizda (datum_start, datum_cil, spoj_id) VALUES ('2019-01-01', '2019-01-01', 1);
+
+INSERT INTO jizdenka (uzivatel_id, cena) VALUES (1, 200);
+
+INSERT INTO jizdenka_jizda(jizdenka_id, jizda_id, stanice_id_start, stanice_id_cil, poradi)	VALUES (3, 10, 1, 3, 1)

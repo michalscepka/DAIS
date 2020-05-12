@@ -13,5 +13,14 @@ namespace Forms_SCE0007
 	/// </summary>
 	public partial class App : Application
 	{
-	}
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            if (!(MainWindow is MainWindow window))
+                return;
+
+            window.db.Close();
+            base.OnExit(e);
+        }
+    }
 }

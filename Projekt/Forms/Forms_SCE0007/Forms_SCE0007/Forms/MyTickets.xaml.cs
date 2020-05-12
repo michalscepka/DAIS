@@ -1,5 +1,6 @@
 ﻿using Projekt.ORM;
 using Projekt.ORM.DAO;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,8 +42,18 @@ namespace Forms_SCE0007.Forms
 		private void DeleteRecord_Click(object sender, RoutedEventArgs e)
 		{
 			if (dataGrid.SelectedItem != null)
-				JizdenkaTable.Delete((dataGrid.SelectedItem as JizdenkaJizda).JizdenkaId, db);
-			OpenRecords(uzivatel_id);
+			{
+				try
+				{
+					JizdenkaTable.Delete((dataGrid.SelectedItem as JizdenkaJizda).JizdenkaId, db);
+				}
+				catch (Exception exception)
+				{
+					MessageBox.Show(exception.Message, "Varování", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+				OpenRecords(uzivatel_id);
+				dataGrid.SelectedIndex = 0;
+			}
 		}
 
 		private void Detail_Click(object sender, RoutedEventArgs e)
@@ -57,7 +68,10 @@ namespace Forms_SCE0007.Forms
 
 			if (dataGrid.SelectedItem != null)
 			{
-				Window window = new JizdenkaDetailDialog(jizdenka, this, db);
+				Window window = new JizdenkaDetailDialog(jizdenka, this, db)
+				{
+					WindowStartupLocation = WindowStartupLocation.CenterScreen
+				};
 				window.ShowDialog();
 			}
 		}

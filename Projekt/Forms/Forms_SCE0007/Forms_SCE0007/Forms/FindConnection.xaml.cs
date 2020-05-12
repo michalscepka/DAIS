@@ -30,7 +30,7 @@ namespace Forms_SCE0007.Forms
 				cb_start.SelectedIndex + 1,
 				cb_cil.SelectedIndex + 1,
 				datepicker.SelectedDate ?? new DateTime(2020, 6, 5),
-				new DateTime(1900, 1, 1, int.Parse(tb_hh.Text), int.Parse(tb_mm.Text), 0),
+				new DateTime(1900, 1, 1, int.Parse(cb_hh.Text), int.Parse(cb_mm.Text), 0),
 				db);
 
 			Collection<NalezenaJizda> nalezeneJizdy = new Collection<NalezenaJizda>();
@@ -75,27 +75,43 @@ namespace Forms_SCE0007.Forms
 
 				if (NalezeneJizdyIDs[dataGrid.SelectedIndex][1] != null)
 				{
-					JizdenkaTable.ZapsatJizdu(
-						jizdenka.Id,
-						NalezeneJizdyIDs[dataGrid.SelectedIndex][0] ?? 0,
-						cb_start.SelectedIndex + 1,
-						NalezeneJizdyIDs[dataGrid.SelectedIndex][1] ?? 0,
-						db);
-					JizdenkaTable.ZapsatJizdu(
-						jizdenka.Id,
-						NalezeneJizdyIDs[dataGrid.SelectedIndex][2] ?? 0,
-						NalezeneJizdyIDs[dataGrid.SelectedIndex][1] ?? 0,
-						cb_cil.SelectedIndex + 1,
-						db);
+					try
+					{
+						JizdenkaTable.ZapsatJizdu(
+							jizdenka.Id,
+							NalezeneJizdyIDs[dataGrid.SelectedIndex][0] ?? 0,
+							cb_start.SelectedIndex + 1,
+							NalezeneJizdyIDs[dataGrid.SelectedIndex][1] ?? 0,
+							db);
+						JizdenkaTable.ZapsatJizdu(
+							jizdenka.Id,
+							NalezeneJizdyIDs[dataGrid.SelectedIndex][2] ?? 0,
+							NalezeneJizdyIDs[dataGrid.SelectedIndex][1] ?? 0,
+							cb_cil.SelectedIndex + 1,
+							db);
+					}
+					catch (Exception exception)
+					{
+						info.Content = exception.Message;
+						return;
+					}
 				}
 				else
 				{
-					JizdenkaTable.ZapsatJizdu(
+					try
+					{
+						JizdenkaTable.ZapsatJizdu(
 						jizdenka.Id,
 						NalezeneJizdyIDs[dataGrid.SelectedIndex][0] ?? 0,
 						cb_start.SelectedIndex + 1,
 						cb_cil.SelectedIndex + 1,
 						db);
+					}
+					catch (Exception exception)
+					{
+						info.Content = exception.Message;
+						return;
+					}
 				}
 
 				info.Content = string.Format("Jizdenka Id {0} koupena.", jizdenka.Id);

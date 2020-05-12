@@ -1,5 +1,6 @@
 ﻿using Projekt.ORM;
 using Projekt.ORM.DAO;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -43,7 +44,15 @@ namespace Forms_SCE0007.Forms
 
 		private void DeleteRecord_Click(object sender, RoutedEventArgs e)
 		{
-			JizdenkaTable.Delete(jizdenka[0].JizdenkaId, db);
+			try
+			{
+				JizdenkaTable.Delete(jizdenka[0].JizdenkaId, db);
+			}
+			catch (Exception exception)
+			{
+				MessageBox.Show(exception.Message, "Varování", MessageBoxButton.OK, MessageBoxImage.Warning);
+				return;
+			}
 			myTickets.OpenRecords(jizdenka[0].Jizdenka.Uzivatel.Id);
 			this.Close();
 		}

@@ -66,16 +66,5 @@ namespace Forms_SCE0007
 			}
 			catch (Exception) { }
 		}
-
-		public void ZapsatJizduDoJizdenky()
-		{
-			JizdenkaTable.ZapsatJizdu(1, 1, 1, 5);
-			JizdenkaTable.ZapsatJizdu(1, 2, 5, 8);
-
-			JizdenkaTable.ZapsatJizdu(2, 1, 2, 5);
-
-			JizdenkaTable.ZapsatJizdu(3, 1, 2, 5);
-			JizdenkaTable.ZapsatJizdu(3, 2, 5, 7);
-		}
 	}
 }

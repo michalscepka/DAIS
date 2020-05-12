@@ -25,7 +25,7 @@ BEGIN
     IF DATEDIFF(day, @v_aktualni_datum, @v_start_datum) > 0 OR (DATEDIFF(day, @v_aktualni_datum, @v_start_datum) = 0 AND DATEDIFF(minute, @v_aktualni_cas, @v_start_cas) > 0)
         UPDATE Jizda SET datum_start = @p_novy_datum_start, datum_cil = @p_novy_datum_cil, spoj_id = @p_novy_spoj_id WHERE jizda_id = @p_jizda_id;
     ELSE
-		RAISERROR('Jizda se jiz neda aktualizovat', 16, 1)
+		RAISERROR('Jizda se jiz neda aktualizovat.', 16, 1)
 END
 
 GO
@@ -204,7 +204,7 @@ BEGIN
 		UPDATE Jizdenka SET cena = cena + dbo.SpocitejCenuJizdy(@p_jizda_id, @p_stanice_id_start, @p_stanice_id_cil) WHERE jizdenka_id = @p_jizdenka_id;
 	END
 	ELSE
-		RAISERROR('Spoj je vyprodany', 16, 1);
+		RAISERROR('Spoj je vyprodany.', 16, 1);
 END
 
 GO
@@ -243,7 +243,7 @@ BEGIN
         DELETE FROM Jizdenka WHERE jizdenka_id = @p_jizdenka_id;
 	END
     ELSE
-        RAISERROR('Jizdenka jiz nelze zrusit', 16, 1)
+        RAISERROR('Jizdenka jiz nelze zrusit.', 16, 1)
 END
 
 GO
